@@ -12,12 +12,16 @@ Teach what makes an AI application become an AI system.
 
 ## Suggested Chapters
 
-- What is AI Systems Engineering?
+- [What is AI Systems Engineering?](chapters/01-what-is-ai-systems-engineering.md)
 - Model vs Application vs System.
 - AI Request Lifecycle.
 - Data, Model, Infrastructure, and Governance Loop.
 - Latency, Throughput, Cost, and Reliability.
 - Why Enterprise AI Is A Systems Problem.
+
+## Research Dossiers
+
+- [What Is AI Systems Engineering?](research/01-what-is-ai-systems-engineering-dossier.md)
 
 ## First Lab
 
