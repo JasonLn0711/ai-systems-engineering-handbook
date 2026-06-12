@@ -1,0 +1,29 @@
+modules:
+  "00-ai-systems-foundations": "AI Systems Foundations"
+  "01-linux-os-networking": "Linux, OS, And Networking"
+  "02-cloud-onprem-private-cloud": "Cloud, On-Prem, And Private Cloud"
+  "03-container-k8s-devops": "Container, K8s, And DevOps"
+  "04-gpu-inference-infrastructure": "GPU And AI Inference Infrastructure"
+  "05-llm-application-architecture": "LLM Application Architecture"
+  "06-rag-data-pipeline": "RAG And Data Pipeline"
+  "07-ai-gateway-agent-governance": "AI Gateway And Agent Governance"
+  "08-voice-ai-systems": "Voice AI Systems"
+  "09-security-red-teaming": "Security, Red Teaming, And AI Risk"
+  "10-enterprise-delivery-fae": "Enterprise Delivery And FAE Workflow"
+  "11-spec-sdd-ai-coding-workflow": "Spec, SDD, And AI-Assisted Coding Workflow"
+  "12-case-study-integrations": "Case Study Integrations"
+
+content_types:
+  - chapter
+  - lab
+  - case-study
+  - glossary-entry
+  - design-note
+  - review
+  - prompt
+  - checklist
+
+confidentiality:
+  - public-safe
+  - internal
+  - restricted

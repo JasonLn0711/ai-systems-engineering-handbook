@@ -1,0 +1,19 @@
+# Never commit secrets or private customer data
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+private/
+customers/
+client-data/
+raw-data/
+recordings/
+transcripts/private/
+
+# Generated artifacts
+site/
+.cache/
+.DS_Store

@@ -1,0 +1,31 @@
+required_chapter_frontmatter:
+  - title
+  - module
+  - chapter_id
+  - level
+  - status
+  - last_updated
+  - prerequisites
+  - learning_objectives
+  - related_terms
+  - related_chapters
+  - voiss_style_relevance
+  - security_relevance
+  - estimated_reading_time
+  - confidentiality
+
+level_values:
+  - beginner
+  - intermediate
+  - advanced
+
+status_values:
+  - draft
+  - review
+  - stable
+  - deprecated
+
+confidentiality_values:
+  - public-safe
+  - internal
+  - restricted
