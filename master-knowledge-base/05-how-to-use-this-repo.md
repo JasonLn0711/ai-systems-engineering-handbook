@@ -38,3 +38,12 @@ Do not invent vendor-specific claims.
 ## When Capturing Private Source-Derived Insight
 
 Never copy raw private source material into the handbook. Convert it into public-safe tutorial requirements and keep the original evidence in its canonical private repo.
+
+Use this routing:
+
+1. Put the source-bounded system map in `master-knowledge-base/`.
+2. Put reusable terms in `glossary/`.
+3. Put implementation depth in the owning `modules/` directory.
+4. Put official public documentation, standards, and papers in `references/`.
+5. Keep raw transcripts, emails, contact routes, compensation details,
+   customer secrets, and unsupported private claims out of this repo.
