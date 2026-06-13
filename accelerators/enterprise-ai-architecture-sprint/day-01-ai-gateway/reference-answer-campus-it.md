@@ -144,6 +144,20 @@ truth. If the student retries the same `create_it_ticket` request, the gateway
 should use an idempotency key or review-item lookup so it does not create
 duplicate ticket drafts.
 
+Hybrid deployment note:
+
+```text
+campus AI Gateway core:
+container / Kubernetes / managed service
+
+edge automation:
+serverless webhook handler, file-intake function, notification function,
+scheduled audit-export trigger
+```
+
+This keeps the core gateway stable while using serverless for short event-driven
+edges.
+
 ## Reference Architecture Diagram
 
 ```mermaid
@@ -159,13 +173,14 @@ flowchart TD
     AR --> IG[Input Guardrail\nscope + injection + PII]
     IG --> RAG[RAG Connector\nfilter access_level=public]
     RAG --> FAQ[IT FAQ / VPN Guide\nsource_ids]
-    FAQ --> MR[Model Router / Serving]
+    FAQ --> MR[Model Router]
+    MR --> MS[Model Serving Engine / Hosted Model API\nvLLM / SGLang / provider]
 
     IG --> TB[Tool Broker]
     TB -->|allow| SEARCH[search_it_faq]
     TB -->|review_required| REVIEW[create_it_ticket approval gate]
 
-    MR --> OG[Output Guardrail\nPII + citation check]
+    MS --> OG[Output Guardrail\nPII + citation check]
     OG --> RB[Response Builder]
     REVIEW --> RB
 
@@ -189,7 +204,8 @@ flowchart TD
 | Input Guardrail | Checks input risk | user message | pass/block/review | prompt injection or PII can proceed |
 | RAG Connector | Retrieves allowed documents | query, role, metadata | public VPN guide chunks | staff-only docs can enter model context |
 | Tool Broker | Mediates tool calls | tool request | allow/deny/review_required | agent can create many tickets directly |
-| Model Router | Selects endpoint | allowed context, task | model response | model choice, cost, version, latency are unmanaged |
+| Model Router | Selects endpoint | allowed context, task | model endpoint and config | model choice, cost, version, latency are unmanaged |
+| Model Serving Engine / Hosted Model API | Runs inference through hosted API or engines such as vLLM/SGLang | allowed prompt/context, model config | model response and serving metrics | model server becomes confused with policy/audit boundary; latency, OOM, queue, and cache failures are invisible |
 | Output Guardrail | Checks answer | model output | pass/review/block | PII or unsupported content can return |
 | Human Review | Reviews `create_it_ticket` | review item | approve/edit/reject/pending | side effects depend only on model judgment |
 | Audit Log | Records evidence | lifecycle events | audit record | no debug, audit, or acceptance evidence |
@@ -212,7 +228,9 @@ flowchart TD
 9. Input Guardrail checks injection, PII, and task scope.
 10. RAG Connector filters by `role=student` and `access_level=public`.
 11. RAG Connector returns source IDs such as `vpn-guide-2026-01`.
-12. Model Router sends allowed context and question to the model endpoint.
+12. Model Router sends allowed context and question to a hosted model API or
+    serving engine such as vLLM/SGLang, and records model/version/latency
+    context for audit and operations.
 13. Model drafts VPN troubleshooting steps and a ticket draft.
 14. Tool Broker classifies `create_it_ticket` as side-effecting and creates a
     human-review item.
@@ -255,6 +273,8 @@ Review queue item:
 | PII leakage | ticket content contains phone or private email | PII detector + masking + log minimization | masked audit record |
 | Stale document | outdated VPN settings cited | version metadata + active filter | source version checked in RAG result |
 | Wrong review path | ticket should be reviewed but is sent | side-effect policy requires review | human review item created |
+| Model serving overload | long VPN troubleshooting context and many users increase TTFT or OOM risk | model routing, prompt budget, queue limits, serving metrics | latency, token, queue, cache, GPU memory, and failure metrics |
+| Serving engine mistaken for gateway | vLLM/SGLang endpoint exposed directly to the app | place serving behind gateway; enforce auth, policy, quota, and audit before model call | audit event ties identity, policy, sources, and model endpoint |
 
 ## Instructor Notes
 
@@ -268,6 +288,8 @@ Passing answers show:
 - Action extraction is a proposal step, not an execution decision.
 - Serverless API is treated as trusted backend code, not as "no backend"; long
   jobs and retry-prone side effects still need queue/state/idempotency design.
+- vLLM/SGLang or any hosted model endpoint is treated as model-serving data
+  plane behind the gateway, not as the policy/audit control plane.
 - Human Review is represented as workflow state.
 - Free text and client hints are normalized into structured actions before
   policy.
@@ -286,5 +308,6 @@ Common errors:
 - Treating OWASP as a legal rule rather than a security guideline that informs
   implementation.
 - Saying "serverless" removes the need for backend authorization.
+- Exposing vLLM/SGLang directly to the browser and calling it the gateway.
 - Letting LLM action extraction bypass schema validation or policy.
 - Logging only final output instead of source IDs, tool decisions, and policy.

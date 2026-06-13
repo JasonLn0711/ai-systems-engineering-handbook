@@ -15,6 +15,7 @@ agent selection, RAG boundary, tool broker, guardrail, human review, and audit.
 | Token verification | mock signed token first, OIDC/JWT later | derive trusted identity server-side |
 | Schema validation | Pydantic | request/response models |
 | Action extraction | rules first, LLM structured output later | raw message and hints become structured actions |
+| Model endpoint adapter | Python mock first, OpenAI-compatible client later | keep model calls behind a swappable interface |
 | Audit storage | local JSONL first, PostgreSQL later | inspectable audit events |
 | Observability | trace ID first, OpenTelemetry later | request path continuity |
 | Policy | Python function first, OPA/Cedar/Casbin later | allow/deny/review_required |
@@ -22,8 +23,9 @@ agent selection, RAG boundary, tool broker, guardrail, human review, and audit.
 | Idempotency | in-memory key table first, database table later | prevent duplicate tickets or emails after retries |
 | Async jobs | in-memory queue first, SQS/Cloudflare Queues/Step Functions later | move long AI work out of synchronous HTTP request |
 
-Day 2 should avoid Kubernetes and GPU serving. Those are later accelerator
-topics.
+Day 2 should avoid Kubernetes and GPU serving. vLLM and SGLang are useful later
+model-serving engines, but the beginner mock should represent them only as a
+future model endpoint behind the gateway.
 
 ## API Contract
 
@@ -38,7 +40,8 @@ the HTTP outcome visible rather than hiding every result behind `200 OK`.
 HTTP is the external client-facing API boundary for this lab. The mock can keep
 all internals in Python functions, but the design should still make clear that
 future internal layers may use streaming, queues, gRPC, database connections,
-model-server protocols, or MCP connectors behind the gateway.
+model-server protocols, vLLM/SGLang endpoints, or MCP connectors behind the
+gateway.
 
 The same handler can later run as a serverless API. Serverless changes the
 hosting model, not the trust model:
@@ -52,6 +55,18 @@ Cloudflare: Worker route -> gateway handler
 In every version, the handler still verifies tokens, resolves permission
 server-side, validates schema, evaluates policy, brokers tools, and writes
 audit evidence.
+
+For local development, be precise about the hosting model:
+
+```text
+plain FastAPI on localhost = normal local backend server
+SAM local / Vercel dev / Wrangler / LocalStack = local serverless emulation
+OpenFaaS / Knative on local Kubernetes = self-hosted serverless-like platform
+```
+
+The Day 2 mock can start as a normal local FastAPI server because that is the
+lowest-friction way to teach route, handler, schema, policy, tool broker, and
+audit. The handler shape should still be portable to a serverless runtime.
 
 For Day 2, keep the first mock synchronous unless the class has time for an
 optional queue. Still teach the boundary:
@@ -191,6 +206,14 @@ RAGResult:
   document_version
   excerpt
 
+ModelCallResult:
+  model_backend: mock | hosted_api | vllm | sglang
+  model_name
+  model_version
+  latency_ms
+  token_count
+  output_text
+
 ToolDecision:
   tool_name
   decision: allow | deny | review_required
@@ -205,6 +228,9 @@ AuditEvent:
   policy_id
   agent_id
   action_extraction_method
+  model_backend
+  model_version
+  model_latency_ms
   policy_decision
   retrieved_source_ids
   tool_decisions
@@ -301,6 +327,10 @@ def handle_ai_request(request: AIRequest):
 - [ ] Risk classifier marks `create_it_ticket` as side-effecting.
 - [ ] Policy function returns `allow`, `deny`, or `review_required`.
 - [ ] RAG mock returns only allowed source IDs.
+- [ ] Model call goes through a model endpoint adapter rather than being
+      hard-coded into the handler.
+- [ ] The mock records model backend/version/latency fields even if the backend
+      is only `mock`.
 - [ ] Tool broker routes `create_it_ticket` to `review_required` for `student`.
 - [ ] Review item is created with `pending_review` state.
 - [ ] Guardrail mock returns `passed`, `blocked`, or `review_required`.

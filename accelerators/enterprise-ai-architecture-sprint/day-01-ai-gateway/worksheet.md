@@ -103,6 +103,7 @@ Agent boundary:
 Tool boundary:
 Data boundary:
 Model boundary:
+Model serving boundary:
 Human review boundary:
 ```
 
@@ -206,6 +207,7 @@ If this gateway were hosted as a serverless API, fill in:
 
 ```text
 Platform: AWS Lambda / Vercel Function / Cloudflare Worker / other
+Hosting model: cloud serverless / cloud hosting / local emulator / self-hosted serverless-like platform / plain localhost backend
 HTTP route:
 Where token validation runs:
 Where permission lookup runs:
@@ -220,6 +222,9 @@ What must not be trusted from the browser:
 Which secrets must not appear in code or logs:
 Which log fields are safe to record:
 Which PII fields must be redacted:
+If localhost is used, what platform or emulator provides function invocation:
+Which gateway components should stay on containers/Kubernetes/cloud hosting:
+Which gateway components can be serverless edge functions:
 One operational risk: cold start / timeout / duplicate retry / secret handling / log privacy / vendor limit
 ```
 
@@ -276,6 +281,7 @@ Fill in a diagram that includes:
 - tool broker
 - RAG/KB/SQL/MCP connector
 - model router/serving
+- model serving engine or hosted model API
 - guardrail
 - audit log
 - human review
@@ -290,9 +296,10 @@ flowchart TD
     AR --> TB[Tool Broker]
     AR --> DS[RAG / KB / SQL / MCP Connector]
     AR --> MR[Model Router / Serving]
+    MR --> MS[Model Serving Engine / Hosted Model API\nvLLM / SGLang / provider]
     TB --> EXT[External Tool / Workflow]
     DS --> MR
-    MR --> OG[Output Guardrail]
+    MS --> OG[Output Guardrail]
     OG --> AU[Audit Log]
     OG --> HR[Human Review]
     HR --> OUT[Response]
@@ -312,6 +319,7 @@ flowchart TD
 | Tool Broker |  |  |  |  |
 | RAG / MCP Connector |  |  |  |  |
 | Model Router / Serving |  |  |  |  |
+| Model Serving Engine / Hosted Model API |  |  |  |  |
 | Guardrail |  |  |  |  |
 | Audit Log |  |  |  |  |
 | Human Review |  |  |  |  |
@@ -352,6 +360,7 @@ Fill at least three gateway types:
 |---|---|---|---|
 | API Gateway |  |  |  |
 | AI / LLM Gateway |  |  |  |
+| Model Serving Engine |  |  |  |
 | Tool Gateway / Broker |  |  |  |
 | Policy Gateway / Engine |  |  |  |
 
@@ -365,6 +374,8 @@ Fill at least five practical pain points:
 | Policy drift / privilege creep |  |  |  |  |
 | Audit gap |  |  |  |  |
 | Serverless timeout / retry |  |  |  |  |
+| Serving engine overload or OOM |  |  |  |  |
+| Serving engine mistaken for gateway |  |  |  |  |
 | Cost / latency |  |  |  |  |
 | UX friction from review |  |  |  |  |
 
@@ -381,6 +392,8 @@ Fill at least five practical pain points:
 | RAG ACL drift |  |  |  |
 | Policy drift |  |  |  |
 | Duplicate side effect from retry |  |  |  |
+| Model serving overload |  |  |  |
+| Model endpoint exposed without gateway controls |  |  |  |
 | Cost / latency blowup |  |  |  |
 | Missing audit trail |  |  |  |
 
@@ -401,7 +414,13 @@ Why is prompt-only governance insufficient for this scenario?
 - [ ] The design names at least one OWASP or NIST access-control principle.
 - [ ] Action extraction method is explicit: UI fields, rules, classifier, LLM structured output, or workflow planner.
 - [ ] Serverless API notes explain that function hosting still requires auth, authorization, validation, durable state, idempotency, logs, and audit.
+- [ ] Serverless is distinguished from cloud hosting and from a plain local backend server.
+- [ ] Enterprise hosting choice is workload-driven, not trend-driven.
+- [ ] The design uses hybrid architecture when appropriate.
 - [ ] Long-running AI work is separated from short synchronous request handling.
+- [ ] vLLM/SGLang or any hosted model endpoint is placed behind the backend/gateway boundary.
+- [ ] Model serving is described as inference data plane, not as the policy/audit control plane.
+- [ ] Model-serving metrics include at least two of: TTFT, TPOT, queue length, cache hit rate, GPU memory, failed requests, or JSON validity.
 - [ ] Side-effect actions have duplicate-prevention or idempotency behavior.
 - [ ] Identity, role, and permission are separated.
 - [ ] The design explains why a logged-in user may still be denied.

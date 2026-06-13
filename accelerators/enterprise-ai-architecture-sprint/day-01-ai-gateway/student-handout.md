@@ -335,6 +335,101 @@ Serverless changes the hosting model.
 It does not change the trust model.
 ```
 
+Serverless API is not the same as "put the backend server on the cloud." That
+is cloud hosting.
+
+```text
+Cloud hosting:
+You rent cloud compute and run a long-lived backend process such as FastAPI,
+Express, Django, Spring Boot, or a containerized service.
+
+Serverless API:
+You deploy handler code and configuration. When a request or event arrives, the
+platform invokes the function in a managed execution environment.
+```
+
+In other words:
+
+```text
+Cloud hosting = your app server is always running somewhere you provision.
+Serverless API = your handler runs when the platform invokes it.
+```
+
+This distinction matters because the word "serverless" is about ownership, not
+physics. Servers still exist. Platform infrastructure still exists. The change
+is that the application team does not manage a dedicated, always-running app
+server process for that function.
+
+The cloud provider view is closer to this:
+
+```text
+Platform infrastructure that exists continuously:
+API Gateway / router / scheduler / runtime manager / container or microVM pool
+logs / metrics / IAM / deployment control plane
+
+Your project normally exists as:
+function code + config + route mapping + IAM / policy + environment variables
+
+When a request arrives:
+platform selects or creates an execution environment
+-> loads or reuses your function
+-> runs the handler
+-> returns the response
+-> keeps the environment warm for possible reuse or recycles it later
+```
+
+AWS Lambda describes this as an execution environment lifecycle: init, invoke,
+and shutdown, with the environment sometimes frozen and reused for later
+invocations. That reuse is why a second request may be a warm start, while a
+new environment has cold-start latency.
+
+The precise mental model is:
+
+```text
+not "no server"
+but "no server process that this team directly manages"
+
+not "no backend"
+but "backend execution unit = event-triggered function invocation"
+
+not "nothing is always running"
+but "the always-running layer belongs to the platform, not to your app server"
+```
+
+#### Localhost, Emulators, And Serverless-Like Platforms
+
+Can you make a serverless API on localhost?
+
+There are three levels.
+
+First, you can simulate serverless locally. Tools such as AWS SAM local,
+Serverless Framework offline, Vercel dev, Cloudflare Wrangler, and LocalStack
+can emulate parts of the cloud request/event flow. This is useful for class
+labs because students can test handler code without deploying every change.
+
+Second, you can run a serverless-like platform on your own machine, private
+server, or Kubernetes cluster. OpenFaaS can deploy functions to Kubernetes and
+run them on-premises or in cloud environments. Knative is a Kubernetes-based
+platform for serverless workloads; Knative Serving can route HTTP requests,
+autoscale services, and scale to zero when idle.
+
+Third, if you only run `localhost:8000` with FastAPI or Express and no function
+platform, then it is not really serverless. It is a local backend server. It
+may be small and local, but a process is still running and listening for
+requests.
+
+So the rule is:
+
+```text
+Local emulator = good for development, but it simulates cloud serverless.
+OpenFaaS / Knative / similar = serverless-like platform you operate yourself.
+Plain localhost web server = cloud hosting style, just on your laptop.
+```
+
+Serverless is "serverless" from the application developer's point of view. From
+the platform operator's point of view, someone still manages routers,
+schedulers, runtimes, containers, logs, metrics, security patches, and capacity.
+
 The trusted handler must still do:
 
 ```text
@@ -617,6 +712,102 @@ Container / Kubernetes / managed inference endpoint = heavy compute or GPU
 Database / object storage = durable state
 Observability / audit = evidence and operations
 ```
+
+#### Cloud Hosting Vs Serverless In Enterprise AI
+
+Enterprise teams usually do not choose only one. They use both.
+
+Cloud hosting usually means VMs, containers, managed container services, or
+Kubernetes running long-lived services. Serverless usually means functions,
+event handlers, and managed platform invocations.
+
+First-principles comparison:
+
+| Question | Serverless API is usually better when | Cloud hosting / containers are usually better when |
+|---|---|---|
+| Traffic | Low, spiky, or unpredictable | High, steady, or very high volume |
+| Workload | Event-driven, short, stateless | Long-running, stateful, streaming, or always warm |
+| Team size | Small team, MVP, PoC, internal automation | Larger team with platform / SRE / DevOps ownership |
+| Cost model | Pay-per-use is cheaper at low volume | Reserved capacity is cheaper at sustained high volume |
+| Control | Platform defaults are acceptable | CPU, RAM, GPU, network, runtime, and latency need tighter control |
+| Portability | Vendor lock-in is acceptable for speed | Multi-cloud, on-prem, private network, or customer deployment matters |
+| AI fit | Webhooks, file intake, job triggers, audit events, notifications | AI Gateway core, streaming, memory service, agent runtime, GPU inference |
+
+The cost intuition:
+
+```text
+Serverless = like paying per ride.
+Cloud hosting = like owning or leasing capacity.
+
+Low request volume:
+serverless often wins because idle time costs little or nothing.
+
+High steady volume:
+containers or VMs often win because you pay for capacity, not every invocation.
+```
+
+This is why large companies still run many core systems on Kubernetes,
+containers, or dedicated services. Serverless is not "new equals better."
+Serverless is better for a certain class of workload.
+
+For AI systems, the split is especially important. A simple webhook or file
+upload trigger is a good serverless job:
+
+```text
+PDF upload
+-> serverless handler validates request
+-> enqueue processing job
+-> return 202 Accepted
+-> worker / GPU service performs OCR, embedding, RAG indexing, or evaluation
+```
+
+But core AI inference usually needs a different shape:
+
+```text
+Load balancer / API Gateway
+-> containerized AI Gateway
+-> agent service / policy service / memory service / tool service
+-> GPU inference cluster or managed model endpoint
+-> PostgreSQL / Redis / object storage / vector database
+```
+
+The mature enterprise pattern is:
+
+```text
+Cloud hosting / containers:
+- core backend
+- AI Gateway core
+- agent registry
+- tool registry
+- policy service
+- memory service
+- streaming / WebSocket sessions
+- GPU inference
+- high-volume internal services
+
+Serverless API:
+- webhooks
+- event processing
+- file upload intake
+- scheduled jobs
+- background job triggers
+- notification handlers
+- lightweight policy or audit extensions
+- internal automation tools
+```
+
+For the Day 1 AI Gateway architecture, a practical recommendation is:
+
+```text
+Use Kubernetes / containers / managed services for the stable enterprise AI
+control plane.
+
+Use serverless functions around the edges for event-driven automation,
+webhooks, job triggers, and small internal tools.
+```
+
+This is hybrid architecture. It is common because cloud hosting and serverless
+solve different workload problems.
 
 A normalized gateway envelope should separate actor, task, actions, resources,
 environment, and trace context:
@@ -928,6 +1119,570 @@ Audit log records the evidence.
 An LLM generates or transforms language. It is an inference component, not a
 governance layer.
 
+#### 2.5.1 Model Serving: vLLM And SGLang
+
+When students hear "run an LLM", they often imagine one Python script that
+loads a model and calls `model.generate()`. That is useful for learning, but it
+is not the same as production serving.
+
+For example, a research script may look like this:
+
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
+
+inputs = tokenizer("Explain what an API is.", return_tensors="pt")
+outputs = model.generate(**inputs, max_new_tokens=100)
+print(tokenizer.decode(outputs[0]))
+```
+
+This is fine for a single user and a small experiment. It is weak for a real
+service because real traffic looks more like this:
+
+```text
+09:00:00 user A sends a 200-token prompt
+09:00:01 user B sends a 5,000-token RAG prompt
+09:00:02 user C wants streaming output
+09:00:02 user D wants JSON output
+09:00:03 user E starts a multi-turn agent workflow
+09:00:04 user F sends a long-context document question
+```
+
+A serving system must manage:
+
+```text
+many concurrent requests
+batching so the GPU does not sit idle
+KV cache memory
+streaming responses
+time to first token
+time per output token
+model loading and versioning
+quantization
+multi-GPU parallelism
+OOM prevention
+metrics and logs
+Docker / Kubernetes deployment
+OpenAI-compatible APIs
+```
+
+This is where **vLLM** and **SGLang** fit.
+
+```text
+model weights = the learned neural network parameters
+vLLM / SGLang = inference serving engines that run the weights efficiently
+AI Gateway = control plane for auth, policy, routing, quota, audit, and review
+```
+
+So the beginner mental model is:
+
+```text
+vLLM / SGLang are usually data-plane serving engines.
+AI Gateway is the control plane in front of them.
+```
+
+They do not train the model. They do not replace the backend. They do not
+replace the AI Gateway. They make model inference fast enough and stable enough
+to be called by a backend, RAG system, agent workflow, or gateway.
+
+##### LLM Inference Lifecycle
+
+One request to a model server usually goes through this flow:
+
+```text
+user request
+-> HTTP API server receives request
+-> tokenizer converts text into tokens
+-> prefill: model reads the prompt and builds KV cache
+-> decode: model generates one token at a time
+-> detokenizer converts output tokens back into text
+-> server streams or returns the response
+```
+
+Two phases matter most:
+
+```text
+prefill = process the full input prompt
+decode  = generate new tokens one by one
+```
+
+Prefill is often compute-intensive. If the prompt contains 8,000 tokens of RAG
+context, the model must first process those 8,000 tokens.
+
+Decode is often memory-intensive. The model generates one next token, then
+another, then another. Each step uses the previous context through cached
+attention data.
+
+This is why long prompts, long answers, streaming, and many concurrent users
+stress a model server differently. A good serving engine has to schedule both
+prefill and decode well.
+
+##### KV Cache
+
+KV cache is the key concept behind LLM serving performance.
+
+Transformer attention uses Query, Key, and Value vectors. When the model has
+already processed previous tokens, it can store their Key and Value vectors
+instead of recomputing them every time it generates the next token.
+
+Simplified:
+
+```text
+prompt tokens:
+[What] [is] [an] [API]
+
+model stores:
+K cache = key vectors for previous tokens
+V cache = value vectors for previous tokens
+```
+
+When the model generates the next token, it reuses the KV cache.
+
+The challenge is that KV cache can become huge:
+
+```text
+user A: 200 tokens
+user B: 8,000 tokens
+user C: 1,500 tokens
+user D: 32,000 tokens
+```
+
+If GPU memory is managed poorly, the system gets fragmentation, low batch size,
+slow throughput, and out-of-memory errors.
+
+##### vLLM
+
+vLLM is a high-performance LLM inference and serving engine. Its most direct
+student mental model is:
+
+```text
+Hugging Face model weights
+-> vLLM engine
+-> OpenAI-compatible API server
+-> backend / RAG / agent / app
+```
+
+vLLM is a strong first tool for learning local or private LLM serving because it
+makes the "model as API server" idea concrete.
+
+Typical start command:
+
+```bash
+vllm serve Qwen/Qwen2.5-1.5B-Instruct
+```
+
+Then an app can call the local vLLM server with an OpenAI-compatible client:
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="EMPTY",
+    base_url="http://localhost:8000/v1",
+)
+
+response = client.chat.completions.create(
+    model="Qwen/Qwen2.5-1.5B-Instruct",
+    messages=[
+        {"role": "user", "content": "請用大二資工學生能理解的方式解釋 API。"}
+    ],
+    temperature=0.2,
+    max_tokens=512,
+)
+
+print(response.choices[0].message.content)
+```
+
+The important detail is `base_url`. The code uses the OpenAI Python SDK shape,
+but the request goes to the local vLLM server, not necessarily to OpenAI's cloud.
+
+vLLM is known for:
+
+```text
+PagedAttention
+continuous batching
+chunked prefill
+prefix caching
+OpenAI-compatible API server
+streaming output
+quantization support
+tensor / pipeline / data / expert parallelism
+multi-LoRA support
+structured outputs and tool-calling support
+many Hugging Face model architectures
+```
+
+PagedAttention is the classic vLLM idea. It treats KV cache memory more like
+operating-system paging: instead of requiring one large continuous memory block
+per request, it can manage KV cache in smaller blocks. That helps reduce waste
+and fragmentation, which allows more useful batching on the GPU.
+
+Use vLLM first when:
+
+```text
+you want to serve Qwen / Llama / Gemma / Mistral / DeepSeek-style models
+you need an OpenAI-compatible local API
+you are building a RAG backend or internal chatbot
+you want streaming
+you want a mature general-purpose serving engine
+you are learning model serving for the first time
+```
+
+##### SGLang
+
+SGLang is also a high-performance serving framework for large language models
+and multimodal models. Its beginner mental model is:
+
+```text
+vLLM = high-performance general model server
+SGLang = high-performance serving runtime that also focuses strongly on
+         structured generation, prefix reuse, and complex LLM workflows
+```
+
+SGLang is attractive when the workload is not just "ask the model once", but
+looks like a language-model program:
+
+```text
+1. read a long shared system prompt
+2. extract structured fields
+3. call or propose tools
+4. generate JSON
+5. reuse long prompt prefixes across many requests
+6. run many similar agent / RAG / extraction workflows
+```
+
+SGLang is known for:
+
+```text
+RadixAttention and prefix caching
+structured outputs with JSON schema / regex / EBNF
+OpenAI-compatible APIs
+native generation APIs
+continuous batching
+paged attention
+chunked prefill
+prefill/decode disaggregation
+multi-GPU parallelism
+quantization
+multi-LoRA batching
+Prometheus production metrics
+```
+
+Typical start command:
+
+```bash
+python3 -m sglang.launch_server \
+  --model-path qwen/qwen2.5-0.5b-instruct \
+  --host 0.0.0.0 \
+  --port 30000
+```
+
+Then call it with an OpenAI-compatible API:
+
+```bash
+curl http://localhost:30000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen/qwen2.5-0.5b-instruct",
+    "messages": [
+      {"role": "user", "content": "What is the capital of France?"}
+    ]
+  }'
+```
+
+SGLang's RadixAttention focuses on reusing common prompt prefixes. That matters
+because enterprise prompts often repeat large blocks:
+
+```text
+shared system prompt
++ policy rules
++ tool rules
++ response format instructions
++ user-specific message
+```
+
+If many requests share the same prefix, reusing the prefix KV cache can reduce
+repeated prefill work.
+
+SGLang's structured outputs matter when the backend needs reliable machine-
+readable output. For example:
+
+```json
+{
+  "risk_level": "critical",
+  "need_human_review": true,
+  "reason": "user reported money transfer and suspected fraud"
+}
+```
+
+That is easier for a backend to validate with Pydantic or JSON Schema than a
+free-form paragraph.
+
+SGLang also documents prefill/decode disaggregation. The idea is that prefill
+and decode have different bottlenecks, so large systems may split them into
+different workers:
+
+```text
+client
+-> router
+-> prefill workers process long prompts and build KV cache
+-> KV transfer
+-> decode workers generate tokens
+-> response
+```
+
+Students do not need to deploy this on Day 1. They only need to understand why
+large LLM serving is a scheduling and memory-management problem, not only a
+Python API problem.
+
+##### vLLM Vs SGLang
+
+| Question | vLLM | SGLang |
+|---|---|---|
+| Core identity | General high-performance LLM inference / serving engine | High-performance LLM / multimodal serving framework with strong workflow and structured-generation focus |
+| First mental model | Turn Hugging Face model weights into an API server | Execute complex LLM workflows and structured generation efficiently |
+| Signature ideas | PagedAttention, continuous batching, OpenAI-compatible serving | RadixAttention, prefix caching, structured outputs, PD disaggregation |
+| Good first use | General chatbot, RAG backend, internal model API | JSON extraction, agent workflows, repeated prefixes, long-context workflows |
+| Student starting point | Usually easier first | Better after serving basics are understood |
+| Gateway replacement? | No | No |
+
+Do not choose by brand. Choose by workload:
+
+```text
+If you need general model serving first:
+start with vLLM.
+
+If your workload has repeated prefixes, structured output, or complex agent
+programs:
+benchmark SGLang seriously.
+
+If the system is important:
+benchmark both with real prompt distributions.
+```
+
+##### Serving Metrics
+
+Do not judge a serving engine by one manual prompt. Measure:
+
+```text
+TTFT  = time to first token
+TPOT  = time per output token
+E2E latency = full request latency
+throughput = tokens/sec
+request throughput = requests/sec
+GPU memory usage
+GPU utilization
+queue length
+cache hit rate
+OOM / failed request rate
+JSON validity rate for structured output
+```
+
+SGLang can expose Prometheus metrics such as prompt tokens, generation tokens,
+token usage, cache hit rate, time to first token, running requests, queue
+requests, and generation throughput. vLLM also has production metrics and
+observability docs. The exact metric names can change by version, so a real
+deployment should pin versions and document dashboards.
+
+##### Relationship To AI Gateway
+
+vLLM / SGLang usually sit behind the AI Gateway:
+
+```text
+Frontend / internal app
+-> backend API
+-> AI Gateway
+   - auth
+   - tenant / user / role
+   - rate limit and quota
+   - policy and guardrails
+   - model routing
+   - audit and cost tracking
+-> serving layer
+   - vLLM server for Qwen
+   - vLLM server for Llama
+   - SGLang server for structured extraction
+   - SGLang server for agent workflow
+-> GPU nodes
+```
+
+Do not expose vLLM or SGLang directly to a browser in an enterprise system.
+They are not the full governance boundary. Put them behind the backend/gateway
+and protect them inside a service network.
+
+##### Real-World Example: Internal RAG Assistant
+
+Example requirement:
+
+```text
+Employees ask questions about HR rules, IT SOPs, engineering docs, and security
+procedures.
+The system must cite sources.
+The system must not retrieve unauthorized documents.
+The system must stream the answer.
+The system must record user, role, source IDs, model version, and latency.
+```
+
+Possible architecture:
+
+```text
+Web UI
+-> FastAPI / NestJS backend
+-> SSO / OAuth
+-> permission filter
+-> vector DB: Qdrant / Milvus / pgvector
+-> RAG prompt construction
+-> AI Gateway: LiteLLM or custom gateway
+-> vLLM or SGLang
+-> GPU
+-> audit log + Prometheus/Grafana
+```
+
+vLLM or SGLang handles model inference. The backend and gateway handle identity,
+retrieval permissions, policy, audit, quota, and review.
+
+##### Real-World Example: Fraud Call Triage
+
+Example requirement:
+
+```text
+ASR transcript enters the system.
+LLM extracts fraud type, transferred amount, risk level, and review need.
+Output must be JSON.
+High-risk cases must go to human review.
+```
+
+Expected output shape:
+
+```json
+{
+  "fraud_type": "fake_investment",
+  "has_transferred_money": true,
+  "amount_twd": 200000,
+  "risk_level": "critical",
+  "need_human_review": true,
+  "evidence": [
+    "caller reported transferring 200000 TWD",
+    "caller mentioned an investment group"
+  ]
+}
+```
+
+SGLang is a strong candidate for this kind of structured-output workload. vLLM
+can also support structured outputs, so the responsible engineering answer is
+to test both with the actual transcripts, JSON schema, concurrency level, and
+latency target.
+
+##### Minimal Project Path
+
+A first student project can be:
+
+```text
+client -> FastAPI -> vLLM -> model -> response
+```
+
+Folder:
+
+```text
+local-llm-api/
+  app.py
+  requirements.txt
+  README.md
+```
+
+`requirements.txt`:
+
+```text
+fastapi
+uvicorn
+openai
+pydantic
+```
+
+Start vLLM:
+
+```bash
+vllm serve Qwen/Qwen2.5-1.5B-Instruct \
+  --host 0.0.0.0 \
+  --port 8000
+```
+
+FastAPI backend:
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+from openai import OpenAI
+
+app = FastAPI()
+
+llm = OpenAI(
+    api_key="EMPTY",
+    base_url="http://localhost:8000/v1",
+)
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/chat")
+def chat(req: ChatRequest):
+    response = llm.chat.completions.create(
+        model="Qwen/Qwen2.5-1.5B-Instruct",
+        messages=[
+            {"role": "system", "content": "你是一位嚴謹的資工教學助理。"},
+            {"role": "user", "content": req.message},
+        ],
+        temperature=0.2,
+        max_tokens=512,
+    )
+
+    return {
+        "answer": response.choices[0].message.content
+    }
+```
+
+Run:
+
+```bash
+uvicorn app:app --reload --port 8080
+```
+
+Test:
+
+```bash
+curl http://localhost:8080/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "請解釋什麼是 KV cache"}'
+```
+
+Then add, in order:
+
+```text
+streaming
+RAG
+auth
+rate limit
+structured logs
+Prometheus metrics
+Docker Compose
+Kubernetes deployment
+AI Gateway routing
+multiple model backends
+fallback routing
+```
+
+##### Common Misunderstandings
+
+| Misunderstanding | Correction |
+|---|---|
+| vLLM / SGLang are models | They are serving engines. Qwen, Llama, Gemma, DeepSeek, and Mistral are model families. |
+| vLLM / SGLang are AI Gateways | They expose APIs, but they do not replace enterprise gateway governance. |
+| If it runs once, it is production-ready | Production needs concurrency, latency, OOM, observability, security, rollback, and versioning tests. |
+| Benchmarking one prompt is enough | Benchmark the real prompt distribution: short, long, RAG, streaming, JSON, agent, and multi-turn. |
+| You must choose only one | A company may use vLLM for general chat and SGLang for structured extraction or prefix-heavy agent workloads. |
+
 RAG retrieves relevant documents before generation. In an enterprise system,
 retrieval must filter by permission and metadata before the model sees context:
 
@@ -1048,6 +1803,10 @@ Evaluation / red-team tests for regression control.
 | Tool Gateway / Broker | Agent action enforcement point | Validates schema, side effects, approval, audit |
 | Policy Gateway / Engine | Authorization decision point | Evaluates structured input against policy rules |
 | Serverless API | HTTP API whose handler is hosted as a managed function | Changes hosting, not backend responsibility; still needs auth, policy, validation, state, idempotency, logs, and audit |
+| Cloud Hosting | Cloud compute running a long-lived app server or container | Better for high-volume, long-running, streaming, or tightly controlled services |
+| Local Serverless Emulator | Local tool that simulates serverless invocation | Useful for development, but not the same as the real cloud platform |
+| Self-hosted Serverless-like Platform | OpenFaaS, Knative, or similar on infrastructure you operate | Gives serverless-style workflow while keeping platform responsibility local/on-prem |
+| Hybrid Architecture | Mix of containers, Kubernetes, serverless, queues, databases, and observability | Common enterprise pattern because workloads differ |
 | Auth / Identity | Verifies the caller | Produces trusted user context |
 | User Identity | Specific person, account, or service | Determines who is audited |
 | Role | Access category assigned to an identity | Helps policy decide user scope |
@@ -1058,6 +1817,11 @@ Evaluation / red-team tests for regression control.
 | Tool Broker | Mediates tool calls | Checks schema, timeout, permission, side effects, audit |
 | RAG Connector | Retrieves allowed data | Filters by metadata and access level before model context |
 | Model Router | Selects model endpoint | Manages model choice, version, latency, cost |
+| Model Serving Engine | Runs model inference | vLLM/SGLang/hosted provider loads model or calls provider, batches requests, manages KV cache, and streams tokens |
+| vLLM | Open-weight model serving engine | Common first tool for exposing Qwen/Llama/Gemma-style models through an OpenAI-compatible API |
+| SGLang | Model serving framework for complex LLM workflows | Strong fit for structured output, prefix-heavy prompts, and agent/RAG serving patterns |
+| KV Cache | Stored attention keys/values | Reduces repeated computation during token generation but consumes GPU memory |
+| TTFT / TPOT | Serving latency metrics | Time to first token and time per output token |
 | Guardrail | Checks input/output risk | Detects PII, unsafe output, unsupported claims |
 | Audit Log | Request lifecycle evidence | Records user, agent, policy, sources, tools, outcome |
 | Human Review | Workflow node for high-risk cases | Creates pending/approve/reject states |

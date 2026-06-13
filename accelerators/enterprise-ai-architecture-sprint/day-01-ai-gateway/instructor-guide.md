@@ -32,6 +32,10 @@ Use these follow-up checks only when the room needs more grounding:
 | Input mode | Can the UI accept free text? | Yes, but the gateway must normalize it into structured actions/resources before policy. |
 | OWASP / NIST | Is OWASP a law? | No. It is a security guideline and verification resource; NIST provides formal risk/control frameworks. |
 | Serverless API | Does serverless mean no backend? | No. It means the trusted handler runs as a managed function; auth, policy, validation, state, idempotency, and audit still run there. |
+| Serverless vs cloud hosting | Is serverless just putting a backend server on the cloud? | No. Cloud hosting runs a provisioned long-lived server/container; serverless deploys handler code and lets the platform invoke it per event. |
+| Localhost serverless | Can localhost be truly serverless? | Localhost can emulate serverless, or run a self-hosted platform like Knative/OpenFaaS, but plain FastAPI/Express on localhost is just a local backend server. |
+| Enterprise choice | Should enterprises choose serverless or containers? | Usually both: containers/K8s for core services and GPU/streaming; serverless for webhooks, triggers, scheduled jobs, notifications, and small automation. |
+| Model serving | Are vLLM and SGLang AI Gateways? | No. They are inference serving engines that usually sit behind the gateway as data-plane services. |
 | Action extraction | Can the LLM split a prompt into actions? | Yes, but the output must be schema-validated and policy-checked before execution. |
 | Backend | What does a handler do after a route receives a request? | Reads body, checks identity/policy, calls services, writes log, returns response. |
 | Identity | What is the difference between user identity and role? | Identity is the specific person/account/service; role is the access category assigned to it. |
@@ -74,6 +78,7 @@ Make the distinction explicit:
 Serverless changes hosting:
 - no self-managed long-running server process
 - platform handles function invocation, runtime startup, routing, scaling
+- platform infrastructure still exists and is shared
 
 Serverless does not remove backend work:
 - API contract
@@ -83,6 +88,22 @@ Serverless does not remove backend work:
 - queue / workflow for long AI jobs
 - idempotency for side-effect actions
 - observability and audit
+```
+
+Then separate three deployment ideas:
+
+```text
+cloud hosting:
+  rented VM/container runs a long-lived FastAPI/Express/Spring service
+
+cloud serverless:
+  provider keeps platform infrastructure running; your function runs when
+  request/event arrives; the environment may be kept warm or recycled
+
+localhost:
+  emulator = serverless development simulation
+  OpenFaaS/Knative on local Kubernetes = serverless-like platform you operate
+  plain localhost web server = not serverless
 ```
 
 Use one concrete flow before students start drawing:
@@ -97,6 +118,20 @@ worker -> LLM / ASR / evaluation -> result store
 GET /summary-jobs/{job_id} -> status/result
 ```
 
+For enterprise selection, use this rule:
+
+```text
+serverless first:
+low traffic, event-driven, webhook, scheduled job, internal tool, PoC, MVP
+
+containers / cloud hosting first:
+core product, high traffic, long service, streaming, WebSocket, AI inference,
+enterprise network, strict latency, or GPU workloads
+
+mature enterprise AI:
+hybrid architecture
+```
+
 The teaching thesis is:
 
 ```text
@@ -109,6 +144,34 @@ Clarify that HTTP is the external gateway boundary, not the model's essence.
 Inside the gateway, streaming, WebSocket, gRPC, queues, event streams,
 databases, model-server protocols, and MCP connectors may all appear. Day 1
 starts with HTTP because it is the most teachable and inspectable API boundary.
+
+When students ask about vLLM or SGLang, place them after the model router:
+
+```text
+AI Gateway control plane
+-> model router
+-> model serving data plane: vLLM / SGLang / hosted model API
+-> GPU or provider runtime
+```
+
+Explain the mechanism before the tool names:
+
+```text
+model serving engine:
+  loads model weights
+  tokenizes prompt
+  runs prefill and decode
+  manages KV cache
+  batches concurrent requests
+  streams output tokens
+
+gateway:
+  authenticates caller
+  checks role, permission, policy, quota
+  filters RAG sources
+  brokers tools
+  writes audit evidence
+```
 
 ## 180-Minute Flow
 
@@ -180,6 +243,21 @@ API Gateway: HTTP traffic, auth integration, rate limits.
 AI / LLM Gateway: model routing, fallback, cache, cost, observability.
 Tool Broker: schema, side effects, approval, idempotency.
 Policy Engine: allow / deny / review_required.
+```
+
+Then contrast hosting models:
+
+```text
+Serverless: edge triggers and automation.
+Containers/Kubernetes: core gateway services and inference.
+Hybrid: practical enterprise default.
+```
+
+Then contrast model serving and gateway control:
+
+```text
+vLLM / SGLang: fast inference, batching, KV cache, streaming.
+AI Gateway: identity, policy, quota, routing, guardrails, audit, review.
 ```
 
 ## Common Failure Gallery
@@ -301,6 +379,23 @@ Missing controls:
 
 Student critique prompt: "Which backend controls still run inside the function, and which long-running work should move to a queue or workflow?"
 
+### Failure 8: Serving Engine Exposed As Gateway
+
+```text
+Browser -> vLLM / SGLang endpoint -> model response
+```
+
+Missing controls:
+
+- no authenticated user or tenant boundary at the model endpoint
+- no policy check before prompt reaches the model
+- no RAG source permission filtering
+- no quota, cost, or model-version governance
+- no tool approval or human-review workflow
+- no audit record tying identity, source IDs, policy decision, and model call
+
+Student critique prompt: "What does the serving engine do well, and what must remain in the gateway?"
+
 ## Instructor Questions
 
 1. If a chatbot answer is wrong, how do we know which source IDs it used?
@@ -328,6 +423,10 @@ Student critique prompt: "Which backend controls still run inside the function, 
 21. In a serverless API, which work should stay synchronous and which work should become a job?
 22. Which side-effect actions need an idempotency key?
 23. Which observability fields help debug a failed serverless invocation without leaking PII?
+24. Is a local FastAPI server a serverless API? Why or why not?
+25. Which parts of an enterprise AI Gateway should run on containers/Kubernetes, and which parts can be serverless?
+26. What problem do vLLM and SGLang solve that a simple `model.generate()` script does not solve?
+27. Which metrics would tell you whether a model-serving endpoint is healthy?
 
 ## Teaching Notes
 
@@ -356,6 +455,15 @@ Student critique prompt: "Which backend controls still run inside the function, 
   has trusted backend code; the platform manages the server process, but the
   team still owns API contracts, permissions, durable state, idempotency,
   secrets, logs, and audit.
+- When students say "serverless is just cloud hosting," separate ownership:
+  cloud hosting runs a long-lived app server chosen by the team; serverless
+  runs handler code inside a platform-managed execution environment.
+- When students say "I can do serverless on localhost," ask which platform is
+  providing routing, invocation, scaling, and lifecycle. Emulators are useful;
+  a plain local backend process is not serverless.
 - When students list only product gateways, ask what pain each gateway type
   actually controls: HTTP traffic, model routing, tool enforcement, or policy
   decision.
+- When students call vLLM or SGLang "the gateway," separate data plane and
+  control plane: serving engines make inference efficient; gateways make AI
+  requests governable, auditable, and policy-controlled.

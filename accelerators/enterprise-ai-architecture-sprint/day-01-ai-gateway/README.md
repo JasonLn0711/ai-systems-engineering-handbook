@@ -26,7 +26,9 @@ an HTTP request/response, recognize a JSON object, explain that a backend route
 calls a handler and writes logs, distinguish login from authorization, and know
 where LLMs, RAG, APIs, and databases sit in a system. They do not need
 Kubernetes, GPU serving, red teaming, or enterprise security framework
-experience before Day 1.
+experience before Day 1. Day 1 introduces GPU/model serving only as an
+architecture boundary: students should recognize where vLLM, SGLang, or hosted
+model APIs sit, without being asked to operate them yet.
 
 The point of these prerequisites is architectural literacy:
 
@@ -61,20 +63,30 @@ By the end of Day 1, the student should be able to:
 8. Explain what a serverless API is, where it can host a trusted gateway
    handler, and why it still needs authorization, durable state, idempotency,
    observability, and audit.
-9. Compare rule-based parsing, classifiers, LLM structured outputs, and
-   workflow planners for turning free text into actions.
-10. Distinguish API gateways, AI/LLM gateways, tool gateways, and policy
-   gateways, and name the engineering pain each one addresses.
-11. Explain why an AI Gateway is a control plane rather than only a proxy.
-12. Draw an AI Gateway architecture with identity, policy, agent, tool, data,
+9. Distinguish cloud hosting, cloud serverless API, local serverless
+   emulation, self-hosted serverless-like platforms, and plain localhost
+   backend servers.
+10. Explain why enterprise AI systems usually use hybrid hosting: containers,
+    Kubernetes, or managed services for core gateway/inference workloads, and
+    serverless for event-driven edge automation.
+11. Explain that vLLM and SGLang are model-serving engines in the inference
+    data plane, while AI Gateway remains the control plane for identity,
+    policy, routing, quota, audit, and review.
+12. Compare rule-based parsing, classifiers, LLM structured outputs, and
+    workflow planners for turning free text into actions.
+13. Distinguish API gateways, AI/LLM gateways, model-serving engines, tool
+    gateways, and policy gateways, and name the engineering pain each one
+    addresses.
+14. Explain why an AI Gateway is a control plane rather than only a proxy.
+15. Draw an AI Gateway architecture with identity, policy, agent, tool, data,
    model, guardrail, audit, and human-review boundaries.
-13. Define the responsibility, input, output, and missing-control failure for
+16. Define the responsibility, input, output, and missing-control failure for
    each component.
-14. Write a 10-15 step request lifecycle from user request to audit event.
-15. Map prompt injection, PII leakage, tool abuse, permission bypass, action
+17. Write a 10-15 step request lifecycle from user request to audit event.
+18. Map prompt injection, PII leakage, tool abuse, permission bypass, action
    extraction failure, RAG ACL drift, cost blowup, and missing audit trail to
    concrete system controls.
-16. Produce reviewable architecture evidence without relying on prompt-only
+19. Produce reviewable architecture evidence without relying on prompt-only
    governance.
 
 ## File Map
@@ -114,6 +126,9 @@ For a class session:
 | Allow/deny/review pipeline | Policy decision worksheet and lifecycle | Request lifecycle, Risk-control map |
 | OWASP/NIST access-control basis | Standards mapping in short explanation and risk-control map | Beginner clarity, Risk-control map |
 | Serverless API boundary | Student handout serverless lifecycle, request-contract bridge, worksheet, and Day 2 handoff note | Beginner clarity, Request lifecycle |
+| Cloud hosting vs serverless vs local emulation | Serverless boundary worksheet and architecture hosting notes | Beginner clarity, Component responsibility |
+| Enterprise hybrid hosting | Gateway comparison, pain-point map, and risk-control map | Risk-control map, Component responsibility |
+| vLLM/SGLang model-serving boundary | Student handout model serving section, diagram, component table, and gateway comparison | Beginner clarity, Component responsibility |
 | Action extraction strategies | Normalization worksheet and lifecycle | Component responsibility, Request lifecycle |
 | Gateway types and pain points | Gateway comparison and risk-control map | Risk-control map, Beginner clarity |
 | AI Gateway as control plane | Architecture diagram | Architecture diagram |
@@ -170,16 +185,24 @@ Before moving into Day 2 implementation, the student should be able to:
 5. Explain what a serverless API is and why serverless still requires trusted
    token validation, authorization, schema validation, durable state, secret
    handling, idempotency for side effects, observability, and audit logging.
-6. Explain that a route maps a URL and method to a handler.
-7. Explain why logs can reconstruct a request lifecycle.
-8. Distinguish user identity from role.
-9. Distinguish authentication from authorization.
-10. Explain how role and permission affect data and tool access.
-11. Explain why a logged-in user can still receive `deny` or `review_required`.
-12. Explain why RAG must filter by permission before model context construction.
-13. Explain why a tool call is a controlled API action.
-14. Identify the database evidence needed for policy, metadata, and audit.
-15. Name at least three practical AI Gateway pain points and the control layer
+6. Distinguish serverless API from cloud hosting, local emulation, self-hosted
+   serverless-like platforms, and plain localhost backend servers.
+7. Explain why enterprise AI Gateway designs often use containers/Kubernetes
+   for core gateway/inference services and serverless for webhooks, triggers,
+   scheduled jobs, notifications, and lightweight automation.
+8. Explain that vLLM/SGLang load model weights and serve inference requests,
+   while the AI Gateway performs identity, policy, quota, audit, routing, and
+   review controls before calling those serving engines.
+9. Explain that a route maps a URL and method to a handler.
+10. Explain why logs can reconstruct a request lifecycle.
+11. Distinguish user identity from role.
+12. Distinguish authentication from authorization.
+13. Explain how role and permission affect data and tool access.
+14. Explain why a logged-in user can still receive `deny` or `review_required`.
+15. Explain why RAG must filter by permission before model context construction.
+16. Explain why a tool call is a controlled API action.
+17. Identify the database evidence needed for policy, metadata, and audit.
+18. Name at least three practical AI Gateway pain points and the control layer
     that reduces each one.
 
 ## Source Boundary
@@ -236,6 +259,8 @@ not require students to master these tools or frameworks.
   <https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html>
 - AWS Lambda + API Gateway:
   <https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html>
+- AWS Lambda execution environment lifecycle:
+  <https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html>
 - AWS Lambda best practices:
   <https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html>
 - AWS Serverless Application Model:
@@ -248,6 +273,10 @@ not require students to master these tools or frameworks.
   <https://developers.cloudflare.com/workers/>
 - Hono:
   <https://hono.dev/>
+- OpenFaaS:
+  <https://www.openfaas.com/>
+- Knative:
+  <https://knative.dev/docs/>
 - AWS Step Functions:
   <https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html>
 - AWS Lambda with SQS:
@@ -264,6 +293,22 @@ not require students to master these tools or frameworks.
   <https://platform.openai.com/docs/guides/agents/guardrails-approvals>
 - LangChain Human-in-the-loop:
   <https://docs.langchain.com/oss/python/langchain/human-in-the-loop>
+- vLLM documentation:
+  <https://docs.vllm.ai/>
+- vLLM quickstart:
+  <https://docs.vllm.ai/en/latest/getting_started/quickstart/>
+- PagedAttention paper:
+  <https://arxiv.org/abs/2309.06180>
+- SGLang documentation:
+  <https://docs.sglang.ai/>
+- SGLang quickstart:
+  <https://docs.sglang.io/docs/get-started/quickstart>
+- SGLang structured outputs:
+  <https://docs.sglang.ai/advanced_features/structured_outputs.html>
+- SGLang PD disaggregation:
+  <https://docs.sglang.ai/advanced_features/pd_disaggregation.html>
+- SGLang production metrics:
+  <https://docs.sglang.io/docs/references/production_metrics>
 - Cloudflare AI Gateway:
   <https://developers.cloudflare.com/ai-gateway/>
 - LiteLLM:

@@ -25,10 +25,16 @@ review.
 | OIDC ID Token | Security token containing authentication claims about an end user, represented as a JWT in OpenID Connect. |
 | JWT | Compact URL-safe token format for transferring signed or integrity-protected claims between parties. |
 | Serverless API | HTTP API implemented as functions managed by a platform such as AWS Lambda, Vercel Functions, or Cloudflare Workers; changes hosting, not backend responsibility. |
+| Cloud Hosting | Hosting model where the team provisions cloud compute and runs a long-lived app server, container, or service process. |
+| Serverless Execution Environment | Isolated runtime environment selected or created by the platform to run a function invocation. |
 | Function Invocation | One execution of serverless handler code triggered by an HTTP request, queue message, schedule, or other event. |
 | Function Runtime | Language execution environment for a function, such as Python, Node.js, Go, or Java. |
 | Cold Start | Extra startup latency when the platform creates a fresh function execution environment. |
 | Warm Start | Faster function invocation when the platform can reuse an existing execution environment. |
+| Local Serverless Emulator | Local development tool that simulates cloud function invocation and event shapes without being the actual cloud platform. |
+| Self-hosted Serverless-like Platform | Platform such as OpenFaaS or Knative that provides serverless-style function routing and autoscaling on infrastructure the team operates. |
+| Scale to Zero | Autoscaling behavior where idle workloads can be reduced to zero running instances and later activated by traffic or events. |
+| Hybrid Architecture | Architecture that combines containers, Kubernetes, managed services, serverless functions, queues, databases, and observability according to workload fit. |
 | Async Job | Long-running task moved out of the immediate HTTP response path and processed through a queue, workflow, or worker. |
 | Webhook | HTTP callback sent by an external service to notify the system that an event occurred. |
 | Free-text request | Natural-language user input that may contain multiple intents, resources, risks, and side-effect requests. |
@@ -39,10 +45,15 @@ review.
 | AI Gateway | Enterprise AI request entrypoint and control plane for identity, policy, agent routing, tool/data boundaries, guardrails, audit, and review. |
 | API Gateway | Gateway focused on HTTP/API traffic, routing, authentication integration, rate limits, quotas, and logs. |
 | AI / LLM Gateway | Gateway focused on model routing, provider abstraction, fallback, caching, token/cost tracking, and LLM observability. |
+| Model Serving Engine | Runtime service that loads model weights and runs inference efficiently with batching, KV cache management, streaming, and serving metrics. |
+| vLLM | Open-source LLM inference and serving engine commonly used to expose open-weight models through an OpenAI-compatible API. |
+| SGLang | High-performance LLM and multimodal serving framework with strong support for structured generation, prefix reuse, and complex LLM workflows. |
+| OpenAI-compatible API | API surface that follows OpenAI-style chat/completions request and response shapes, even when the backend is a local or private model server. |
 | Tool Gateway | Enforcement boundary for agent tool calls, schema validation, side-effect checks, approvals, and tool audit. |
 | Policy Gateway | Policy decision point that centralizes authorization logic for applications or services. |
 | Control plane | The layer that manages decisions, policy, coordination, and control behavior. |
 | Data plane | The layer that executes data movement or request processing, such as retrieval, model serving, and tool execution. |
+| Model inference data plane | Serving layer where model requests are executed after gateway policy, source filtering, routing, and quota decisions. |
 | User Identity | Specific person, account, or service making a request; answers who should be authenticated and audited. |
 | Role | Access category or responsibility assigned to an identity, such as `student`, `staff`, or `admin`. |
 | Authentication | Process that verifies who the caller is, usually through session, token, OAuth, SSO, or service identity. |
@@ -63,6 +74,15 @@ review.
 | Side-effect tool | Tool that changes external state, such as creating a ticket, sending email, or updating a database. |
 | RAG Connector | Controlled retrieval component that exposes allowed knowledge sources to the model workflow. |
 | LLM | Large language model used as an inference component for language understanding, summarization, extraction, and generation. |
+| Inference Serving | Operating a trained model as a callable service for applications, usually with concurrency, batching, streaming, monitoring, and failure handling. |
+| Prefill | LLM inference stage where the model processes the input prompt and builds KV cache before generating output tokens. |
+| Decode | LLM inference stage where the model generates output tokens one at a time using existing context and KV cache. |
+| KV Cache | Cached Key and Value vectors from transformer attention, reused during generation to avoid recomputing previous tokens. |
+| PagedAttention | vLLM memory-management technique that manages KV cache in blocks inspired by paging to reduce waste and improve batching. |
+| Prefix Caching | Reuse of cached computation for shared prompt prefixes, useful when many requests share the same system prompt, policy text, or RAG scaffold. |
+| RadixAttention | SGLang prefix-cache technique that organizes shared prompt prefixes for efficient KV cache reuse. |
+| TTFT | Time to first token; latency from request start until the first generated token is returned. |
+| TPOT | Time per output token; average decode speed for generated tokens after the first token. |
 | RAG | Retrieval-Augmented Generation; retrieval of relevant allowed context before language generation. |
 | Metadata filtering | Filtering by fields such as `access_level`, `owner`, `document_version`, and `status` before context reaches the model. |
 | RAG ACL Drift | Failure mode where a vector index or retrieval cache no longer matches the source system's current permissions. |
