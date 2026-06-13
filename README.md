@@ -32,6 +32,7 @@ ai-systems-engineering-handbook/
 ├── master-knowledge-base/
 ├── modules/
 ├── labs/
+├── accelerators/
 ├── case-studies/
 ├── glossary/
 ├── diagrams/
@@ -48,6 +49,7 @@ The key distinction:
 - Knowledge Modules teach one domain deeply.
 - Tutorials teach concepts progressively.
 - Labs force implementation.
+- Accelerators turn several modules into short evidence-generation sprints.
 - Case Studies connect domains into realistic enterprise AI projects.
 - Checklists are memory aids, not substitutes for tutorials.
 
@@ -85,6 +87,10 @@ Then choose a module by current work:
 - Security review: module `09`
 - Customer delivery: module `10`
 - Codex workflow: module `11`
+
+For short-term enterprise architecture evidence, use:
+
+- `accelerators/enterprise-ai-architecture-sprint/`
 
 ## Chapter Standard
 

@@ -25,6 +25,7 @@ The handbook is organized as a master map plus modular tutorials. Start here whe
 - Failure-mode libraries.
 - Security and governance review habits.
 - Labs that turn concepts into executable skill.
+- Accelerators that turn module knowledge into short evidence-generation sprints.
 - Case studies that connect modules into realistic enterprise projects.
 
 ## Source-Bounded Learning Artifacts
@@ -39,3 +40,14 @@ its canonical private repo.
   requirements to prepare for VOISS-style AI systems work.
 - `08-first-30-days-learning-checklist.md`: first-month readiness path derived
   from the same technical map.
+- `09-cs-professor-course-authoring-packet.md`: teacher-facing packet for
+  writing sophomore-friendly software engineering and systems engineering
+  tutorials for this repo.
+
+## Evidence Accelerators
+
+Use `accelerators/enterprise-ai-architecture-sprint/` when the immediate goal
+is to produce a public-safe enterprise AI architecture evidence packet. The
+accelerator connects AI Gateway, governance, red teaming, K8s deployment, GPU
+capacity, guardrails, MCP/tool/memory governance, and real-time voice evidence
+without copying private source material.

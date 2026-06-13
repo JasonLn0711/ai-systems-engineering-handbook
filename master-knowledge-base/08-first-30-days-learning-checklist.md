@@ -8,6 +8,15 @@ The month wins when the learner can explain, deploy, debug, and review a small
 enterprise AI system across deployment, model serving, RAG, governance, voice
 AI, security, and AI-assisted coding controls.
 
+For a shorter evidence sprint, use:
+
+```text
+accelerators/enterprise-ai-architecture-sprint/
+```
+
+The accelerator converts this 30-day learning map into a 7-14 day public-safe
+architecture evidence packet.
+
 ## P0: First Month Must Reach Working Competence
 
 Outcome: build and explain a small governed local AI service with deployment,
@@ -112,3 +121,16 @@ security frameworks, and multi-agent governance.
 - A red-team checklist catches at least prompt injection, unsafe retrieval,
   tool misuse, and PII leakage paths.
 - A Spec + SDD + README explains the architecture before code changes.
+
+## Accelerator Bridge
+
+The first evidence packet should prioritize:
+
+1. AI Gateway architecture.
+2. Agent Governance Framework.
+3. Red Teaming Framework.
+4. GPU capacity estimation model.
+5. K8s inference deployment lab.
+6. PII / Guardrail demo.
+7. MCP / Tool / Memory governance.
+8. Real-time voice-agent evidence plan.

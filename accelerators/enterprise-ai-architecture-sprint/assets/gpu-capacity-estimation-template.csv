@@ -1,0 +1,5 @@
+scenario,gpu_target,model_name,model_type,parameter_count_b,precision,estimated_model_weights_gb,context_length_tokens,concurrency,estimated_kv_cache_gb,runtime_overhead_gb,safety_margin_gb,total_estimated_vram_gb,available_vram_gb,capacity_judgment,validation_command_or_method,observed_peak_vram_gb,observed_p50_latency_ms,observed_p95_latency_ms,notes
+developer_workstation,RTX-class local GPU,example-local-llm,dense,,,,,,,,,,,,,,,,,
+lab_server,A6000-class GPU,example-served-llm,dense,,,,,,,,,,,,,,,,,
+enterprise_server,H200-class GPU,example-enterprise-llm,dense_or_moe,,,,,,,,,,,,,,,,,
+edge_box,compact edge accelerator,example-edge-agent,mixed,,,,,,,,,,,,,,,,,

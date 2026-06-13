@@ -34,7 +34,25 @@ Add:
 6. Build VAD + ASR demo.
 7. Add audit log and policy gate.
 
-## Phase 4: Case Studies
+## Phase 4: Architecture Sprint Evidence Pack
+
+Add:
+
+1. Enterprise AI Architecture Accelerator.
+2. AI Gateway architecture evidence plan.
+3. Agent Governance Framework.
+4. Red Teaming Framework.
+5. GPU capacity estimation model.
+6. K8s inference service lab plan.
+7. PII / Guardrail demo plan.
+8. MCP / Tool / Memory governance map.
+9. Real-time voice-agent evidence plan.
+
+Acceptance target: a learner can produce a 7-14 day evidence packet showing
+enterprise AI architecture readiness, not only isolated model or tool
+familiarity.
+
+## Phase 5: Case Studies
 
 Add:
 
@@ -45,7 +63,7 @@ Add:
 5. Semiconductor sound anomaly detection.
 6. Private cloud AI appliance.
 
-## Phase 5: Validation Scripts
+## Phase 6: Validation Scripts
 
 Implement:
 
