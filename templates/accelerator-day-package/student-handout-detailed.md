@@ -1,11 +1,15 @@
-# Student Handout: <TOPIC>
+# Detailed Student Handout: <TOPIC>
 
-This is the normal first-principle summary derived from
-`student-handout-detailed.md`.
+This is the canonical long-form student explanation for Day <DAY_NUMBER>.
 
-Keep every chapter and subchapter from the detailed version. Shorten each
-section to the core claim, mechanism, boundary, student action, and review
-evidence.
+Use this file for student-facing expansions, source-derived teaching details,
+examples, technical mechanisms, diagrams, protocol notes, and deeper
+comparisons. Apply the source-boundary rules before adding material.
+
+After updating this file, update `student-handout-detailed.zh-TW.md` as a
+complete Taiwan Traditional Chinese version, then update `student-handout.md`
+as a first-principle summary that preserves every chapter and subchapter from
+this detailed version.
 
 ## 1. First Conclusion
 

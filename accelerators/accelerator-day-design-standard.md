@@ -12,6 +12,8 @@ The fixed unit is:
 accelerators/<accelerator-name>/day-<NN>-<short-topic>/
 ├── README.md
 ├── student-handout.md
+├── student-handout-detailed.md
+├── student-handout-detailed.zh-TW.md
 ├── instructor-guide.md
 ├── worksheet.md
 ├── reference-answer-<scenario>.md
@@ -46,7 +48,9 @@ from vibes.
 | File | Audience | Required contents |
 |---|---|---|
 | `README.md` | everyone | purpose, target learner, learning objectives, file map, use order, objective-to-assessment map, source boundary, references |
-| `student-handout.md` | students | concise concept explanation, core terms, scenario, diagrams, artifact expectations, no reference answer |
+| `student-handout.md` | students | normal first-principle summary derived from `student-handout-detailed.md`; preserves every detailed-version chapter/subchapter, no reference answer |
+| `student-handout-detailed.md` | students / instructor | canonical long-form student explanation; receives new student-facing source material first, no reference answer |
+| `student-handout-detailed.zh-TW.md` | students / instructor | complete Taiwan Traditional Chinese version of `student-handout-detailed.md`; preserves every section and detail, no reference answer |
 | `instructor-guide.md` | instructor | teaching flow, pre-class diagnostic, board/slide plan, questions, common failure gallery |
 | `worksheet.md` | students | printable templates for all student artifacts |
 | `reference-answer-<scenario>.md` | instructor / TA | filled answer for one public-safe scenario, common mistakes |
@@ -97,6 +101,9 @@ Each objective must map to:
 Students receive:
 
 - `student-handout.md`
+- `student-handout-detailed.md` when deeper reading is appropriate
+- `student-handout-detailed.zh-TW.md` when students need the complete Taiwan
+  Traditional Chinese detailed version
 - `worksheet.md`
 - public-safe scenario options
 
@@ -107,6 +114,44 @@ Students do not receive before submission:
 - instructor-only failure diagnosis
 
 This keeps the lesson diagnostic and prevents answer-copying.
+
+## Detailed-To-Normal Student Handout Rule
+
+Each accelerator day should maintain three student-facing handout layers:
+
+```text
+student-handout-detailed.md
+-> complete Taiwan Traditional Chinese translation
+-> student-handout-detailed.zh-TW.md
+
+student-handout-detailed.md
+-> first-principle summarization
+-> student-handout.md
+```
+
+`student-handout-detailed.md` is the canonical place for new student-facing
+material. When new supplemental sources, examples, mechanisms, transcript
+notes, tool details, or teaching expansions are added to a day, integrate them
+into the detailed version first after applying the source-boundary rules.
+
+`student-handout-detailed.zh-TW.md` is the complete Taiwan Traditional Chinese
+companion to the detailed handout. It must preserve every heading, subheading,
+paragraph, table, diagram, code block, command, schema, list, example, source
+boundary, and reference from `student-handout-detailed.md`. It is not a
+summary, localization rewrite, or selected excerpt. Use Taiwan Traditional
+Chinese prose for explanation, while preserving technical identifiers,
+filenames, commands, API names, status codes, schemas, code, and URLs in their
+original form unless a short translation note is needed.
+
+`student-handout.md` is the normal class handout. It must be derived from the
+detailed version by first-principle summarization. The summary must preserve
+every chapter and subchapter from the detailed version, but shorten each section
+to the positive claim, core mechanism, system boundary, student action, and
+review evidence.
+
+Do not introduce student-facing concepts only in `student-handout.md`. If a
+concept belongs in the normal handout, it must have a home in the detailed
+handout first.
 
 ## Required Artifact Pattern
 
@@ -169,6 +214,14 @@ Not allowed:
 Before marking a day ready:
 
 - [ ] Required files exist.
+- [ ] `student-handout-detailed.md` exists and is the canonical long-form
+      student-facing source.
+- [ ] `student-handout-detailed.zh-TW.md` exists and is a complete Taiwan
+      Traditional Chinese version of `student-handout-detailed.md`.
+- [ ] `student-handout.md` is a first-principle summary of
+      `student-handout-detailed.md`.
+- [ ] `student-handout.md` preserves every chapter/subchapter from the detailed
+      version.
 - [ ] Student handout does not contain reference answer or detailed rubric.
 - [ ] Instructor guide has diagnostic and failure gallery.
 - [ ] Worksheet can be completed without extra context.
@@ -182,11 +235,15 @@ Before marking a day ready:
 1. Copy `templates/accelerator-day-package/` into the accelerator directory.
 2. Rename the folder to `day-<NN>-<short-topic>/`.
 3. Fill `README.md` first.
-4. Draft `student-handout.md` without answers.
-5. Draft `worksheet.md` from required deliverables.
-6. Draft `reference-answer-<scenario>.md`.
-7. Draft `rubric.md` and objective mapping.
-8. Draft `instructor-guide.md` with diagnostic and failure gallery.
-9. Draft `day-<NN+1>-lab-handoff.md`.
-10. Add `glossary-updates.md`.
-11. Run repo checks and review links.
+4. Draft or update `student-handout-detailed.md` without answers.
+5. Draft or update `student-handout-detailed.zh-TW.md` as the complete Taiwan
+   Traditional Chinese version of the detailed handout.
+6. Derive `student-handout.md` from the detailed version by first-principle
+   summarization while preserving every chapter/subchapter.
+7. Draft `worksheet.md` from required deliverables.
+8. Draft `reference-answer-<scenario>.md`.
+9. Draft `rubric.md` and objective mapping.
+10. Draft `instructor-guide.md` with diagnostic and failure gallery.
+11. Draft `day-<NN+1>-lab-handoff.md`.
+12. Add `glossary-updates.md`.
+13. Run repo checks and review links.

@@ -36,7 +36,9 @@ By the end of this day, the student should be able to:
 
 | File | Audience | Purpose |
 |---|---|---|
-| `student-handout.md` | Students | Main handout without reference answers. |
+| `student-handout.md` | Students | Normal first-principle summary derived from `student-handout-detailed.md`, without reference answers. |
+| `student-handout-detailed.md` | Students / instructor | Canonical long-form student explanation; add new student-facing material here first. |
+| `student-handout-detailed.zh-TW.md` | Students / instructor | Complete Taiwan Traditional Chinese version of `student-handout-detailed.md`; preserve every detail. |
 | `worksheet.md` | Students | Printable in-class artifact templates. |
 | `instructor-guide.md` | Instructor | Teaching flow, diagnostic, prompts, failure gallery. |
 | `reference-answer-<scenario>.md` | Instructor / TA | Filled reference answer. |
@@ -49,11 +51,14 @@ By the end of this day, the student should be able to:
 
 1. Send `student-handout.md` sections <X-Y> as pre-class reading.
 2. Start class with the diagnostic in `instructor-guide.md`.
-3. Teach the main concept using `student-handout.md`.
-4. Run the workshop using `worksheet.md`.
-5. Grade using `rubric.md`.
-6. Compare instructor/TA review against `reference-answer-<scenario>.md`.
-7. Move implementation work into `day-<NEXT_DAY_NUMBER>-lab-handoff.md`.
+3. Teach the main concept using `student-handout.md`; use
+   `student-handout-detailed.md` for deeper examples or follow-up reading.
+4. Use `student-handout-detailed.zh-TW.md` when students need the complete
+   Taiwan Traditional Chinese detailed version.
+5. Run the workshop using `worksheet.md`.
+6. Grade using `rubric.md`.
+7. Compare instructor/TA review against `reference-answer-<scenario>.md`.
+8. Move implementation work into `day-<NEXT_DAY_NUMBER>-lab-handoff.md`.
 
 ## Learning Objective To Assessment Map
 
@@ -68,6 +73,9 @@ By the end of this day, the student should be able to:
 Students should receive:
 
 - `student-handout.md`
+- `student-handout-detailed.md` when deeper reading is appropriate
+- `student-handout-detailed.zh-TW.md` when students need the complete Taiwan
+  Traditional Chinese detailed version
 - `worksheet.md`
 - public-safe scenario options
 
@@ -76,6 +84,23 @@ Students should not receive before submission:
 - `reference-answer-<scenario>.md`
 - detailed grading notes in `rubric.md`
 - instructor-only failure diagnosis notes
+
+## Student Handout Maintenance Rule
+
+When new student-facing source material is added to this day, integrate it into
+`student-handout-detailed.md` first. Then update
+`student-handout-detailed.zh-TW.md` as the complete Taiwan Traditional Chinese
+version, and update `student-handout.md` as a first-principle summary of the
+detailed version.
+
+The normal handout must preserve every chapter and subchapter from the detailed
+version while shortening each section to the core claim, mechanism, boundary,
+student action, and review evidence.
+
+The Taiwan Traditional Chinese detailed handout must preserve every heading,
+subheading, paragraph, table, diagram, code block, command, schema, list,
+example, source-boundary note, and reference from the detailed source. It is not
+a summary or selected excerpt.
 
 ## Minimum Day Deliverables
 
