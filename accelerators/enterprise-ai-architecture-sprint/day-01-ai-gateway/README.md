@@ -93,7 +93,9 @@ By the end of Day 1, the student should be able to:
 
 | File | Audience | Purpose |
 |---|---|---|
-| `student-handout.md` | Students | Main lecture handout without reference answers. |
+| `student-handout.md` | Students | Summarized first-principle lecture handout without reference answers. |
+| `student-handout-detailed.md` | Students / instructor | Detailed companion handout with extended explanations, examples, and comparisons. |
+| `student-handout-detailed.zh-TW.md` | Students / instructor | Complete Taiwan Traditional Chinese version of the detailed handout. |
 | `worksheet.md` | Students | Printable in-class artifact templates. |
 | `instructor-guide.md` | Instructor | Teaching flow, diagnostic, prompts, failure gallery. |
 | `reference-answer-campus-it.md` | Instructor / TA | Campus IT Helpdesk reference answer. |
@@ -108,11 +110,14 @@ For a class session:
 
 1. Send `student-handout.md` sections 1-6 as pre-class reading.
 2. Start class with the pre-class diagnostic in `instructor-guide.md`.
-3. Teach the main concept using `student-handout.md`.
-4. Run the workshop using `worksheet.md`.
-5. Grade using `rubric.md`.
-6. Compare instructor/TA review against `reference-answer-campus-it.md`.
-7. Move implementation work into `day-02-lab-handoff.md`.
+3. Teach the main concept using `student-handout.md`, then use
+   `student-handout-detailed.md` when students need deeper examples.
+4. Use `student-handout-detailed.zh-TW.md` when students need the complete
+   Taiwan Traditional Chinese detailed version.
+5. Run the workshop using `worksheet.md`.
+6. Grade using `rubric.md`.
+7. Compare instructor/TA review against `reference-answer-campus-it.md`.
+8. Move implementation work into `day-02-lab-handoff.md`.
 
 ## Learning Objective To Assessment Map
 
@@ -129,7 +134,8 @@ For a class session:
 | Cloud hosting vs serverless vs local emulation | Serverless boundary worksheet and architecture hosting notes | Beginner clarity, Component responsibility |
 | Enterprise hybrid hosting | Gateway comparison, pain-point map, and risk-control map | Risk-control map, Component responsibility |
 | vLLM/SGLang model-serving boundary | Student handout model serving section, diagram, component table, and gateway comparison | Beginner clarity, Component responsibility |
-| Action extraction strategies | Normalization worksheet and lifecycle | Component responsibility, Request lifecycle |
+| Action extraction strategies | Normalization worksheet with multi-label action candidates, slots, risk, confidence, fallback, and lifecycle | Component responsibility, Request lifecycle |
+| Natural-language-first UX with policy-first execution | Action preview / smart hints worksheet and risk-confidence behavior table | Beginner clarity, Risk-control map |
 | Gateway types and pain points | Gateway comparison and risk-control map | Risk-control map, Beginner clarity |
 | AI Gateway as control plane | Architecture diagram | Architecture diagram |
 | Component responsibility | Component responsibility table | Component responsibility |
@@ -223,6 +229,20 @@ not require students to master these tools or frameworks.
 - JSON Schema documentation: <https://json-schema.org/learn/getting-started-step-by-step>
 - OpenAI Structured Outputs guide:
   <https://platform.openai.com/docs/guides/structured-outputs>
+- Pydantic JSON Schema:
+  <https://docs.pydantic.dev/latest/concepts/json_schema/>
+- scikit-learn text feature extraction:
+  <https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction>
+- scikit-learn text classification example:
+  <https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html>
+- Hugging Face Transformers text classification:
+  <https://huggingface.co/docs/transformers/tasks/sequence_classification>
+- Hugging Face Transformers pipelines:
+  <https://huggingface.co/docs/transformers/main_classes/pipelines>
+- People + AI Guidebook, Explainability and Trust:
+  <https://pair.withgoogle.com/chapter/explainability-trust/>
+- Microsoft Guidelines for Human-AI Interaction:
+  <https://www.microsoft.com/en-us/research/project/guidelines-for-human-ai-interaction/>
 - Open Policy Agent documentation: <https://www.openpolicyagent.org/docs/>
 - Casbin documentation: <https://casbin.apache.org/docs/overview/>
 - LangGraph interrupts documentation:
