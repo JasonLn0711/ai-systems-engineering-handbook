@@ -1,0 +1,16 @@
+{
+  "package": "day-02-agent-governance",
+  "created": "2026-06-14",
+  "target_repo_path": "accelerators/enterprise-ai-architecture-sprint/day-02-agent-governance/",
+  "files": [
+    "README.md",
+    "student-handout.md",
+    "instructor-guide.md",
+    "worksheet.md",
+    "reference-answer-campus-it-agent.md",
+    "rubric.md",
+    "day-03-red-team-handoff.md",
+    "glossary-updates.md",
+    "source-package.md"
+  ]
+}
