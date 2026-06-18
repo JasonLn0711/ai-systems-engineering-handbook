@@ -12,7 +12,10 @@ limited time box.
 - `enterprise-ai-architecture-sprint/`: a public-safe sprint for producing
   enterprise AI architecture evidence across AI Gateway, agent governance, red
   teaming, K8s deployment, GPU capacity, guardrails, MCP/tool governance, and
-  real-time voice.
+  real-time voice. Its Traditional Chinese 7-day onboarding tutorial is
+  `enterprise-ai-architecture-sprint/7-day-consulting-onboarding-tutorial.zh-TW.md`;
+  the expanded 28/30-day spiral bootcamp is
+  `enterprise-ai-architecture-sprint/30-day-spiral-bootcamp.zh-TW.md`.
 
 ## Day Package Standard
 

@@ -4,6 +4,22 @@ This accelerator converts enterprise AI interview and project signals into a
 public-safe evidence sprint. It is designed for a learner who already has some
 AI implementation experience and needs to produce architecture evidence fast.
 
+The primary 7-day student-facing onboarding tutorial is:
+
+```text
+7-day-consulting-onboarding-tutorial.zh-TW.md
+```
+
+The expanded 28/30-day spiral bootcamp design is:
+
+```text
+30-day-spiral-bootcamp.zh-TW.md
+```
+
+Use that file when the learner needs a Traditional Chinese, tutorial-style,
+sophomore-friendly path from interview signals to enterprise voice AI system
+delivery evidence.
+
 The sprint goal is:
 
 ```text
@@ -24,25 +40,33 @@ potential
 - PII / guardrail demo plan.
 - MCP / tool / memory governance map.
 - Real-time voice-agent evidence plan.
+- Consolidated 7-day onboarding pack for enterprise voice AI systems.
+- Expanded 28-day bootcamp plus 2-day mock review and portfolio packaging
+  plan.
 
 ## How To Use It
 
-1. Start with `00-sprint-map.md`.
-2. Use `day-01-ai-gateway/README.md` for the first teaching and
+1. Start with `7-day-consulting-onboarding-tutorial.zh-TW.md` when the
+   learner needs the complete 7-day overview curriculum.
+2. Use `30-day-spiral-bootcamp.zh-TW.md` when the learner needs the
+   expanded 28/30-day beginner-to-deliverable bootcamp.
+3. Use `00-sprint-map.md` as the evidence map and day-by-day checklist.
+4. Use `day-01-ai-gateway/README.md` for the first teaching and
    artifact-production day. The old
    `day-01-ai-gateway-architecture-tutorial.md` path is kept as a compatibility
    entrypoint.
-3. Use `day-02-agent-governance/README.md` for the second teaching and
+5. Use `day-02-agent-governance/README.md` for the second teaching and
    artifact-production day.
-4. Use `../accelerator-day-design-standard.md` and
+6. Use `../accelerator-day-design-standard.md` and
    `../../templates/accelerator-day-package/` for Day 2 and later course
    packages.
-5. Build the artifacts in priority order.
-6. Link each sprint output back to the owning module or lab.
-7. Treat every numbered sprint file as an evidence-production plan and each
+7. Build the artifacts in priority order.
+8. Link each sprint output back to the owning module or lab.
+9. Treat every numbered sprint file as an evidence-production plan and each
    `day-*` directory as a teachable course package with student, instructor,
    worksheet, reference-answer, rubric, and lab-handoff files.
-8. Convert any private source-derived insight into public-safe system language.
+10. Convert any private source-derived insight into public-safe system
+    language.
 
 ## Day Course Packages
 
@@ -51,16 +75,20 @@ potential
 | 1 | AI Gateway Architecture Evidence | `day-01-ai-gateway/` | `01-ai-gateway-architecture.md` |
 | 2 | Agent Governance Framework | `day-02-agent-governance/` | `02-agent-governance-framework.md` |
 
+The full 7-day tutorial covers voice AI, RAG, tool governance, red teaming,
+PII guardrails, Docker/K8s, GPU sizing, demo packaging, and first-30 days
+onboarding strategy. The 30-day bootcamp revisits the same themes in four
+spiral passes: overview, mechanism, lab, and delivery.
+
 ## Priority Order
 
-1. AI Gateway architecture.
-2. Agent Governance Framework.
-3. Red Teaming Framework.
-4. GPU capacity estimation model.
-5. K8s inference deployment lab.
-6. PII / Guardrail demo.
-7. MCP / Tool / Memory governance.
-8. Physical / real-time voice pipeline.
+1. Domain map and issue tree.
+2. Voice AI pipeline.
+3. RAG, tool use, agent governance, and AI Gateway.
+4. PII, guardrails, and red teaming.
+5. Docker, K8s, GPU sizing, and vLLM serving.
+6. Integrated demo and architecture memo.
+7. Onboarding pack and first-30-days plan.
 
 ## Public-Safe Boundary
 
