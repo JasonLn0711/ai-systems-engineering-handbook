@@ -37,6 +37,8 @@ Use these follow-up checks only when the room needs more grounding:
 | Enterprise choice | Should enterprises choose serverless or containers? | Usually both: containers/K8s for core services and GPU/streaming; serverless for webhooks, triggers, scheduled jobs, notifications, and small automation. |
 | Model serving | Are vLLM and SGLang AI Gateways? | No. They are inference serving engines that usually sit behind the gateway as data-plane services. |
 | Action extraction | Can the LLM split a prompt into actions? | Yes, but the output must be schema-validated and policy-checked before execution. |
+| Classifier design | Should classifier output only one label? | No. Enterprise prompts may require multi-label intent, action candidates, slots, risk, ambiguity, confidence, and next step. |
+| UX hints | Do UI hints mean forcing users into forms? | No. Natural-language-first input can be paired with optional chips, action previews, and minimal clarification questions. |
 | Backend | What does a handler do after a route receives a request? | Reads body, checks identity/policy, calls services, writes log, returns response. |
 | Identity | What is the difference between user identity and role? | Identity is the specific person/account/service; role is the access category assigned to it. |
 | Authorization | Why does login not imply access to every document? | Authorization still checks role, permission, resource, and action. |
@@ -236,6 +238,39 @@ selected list/form: stable for policy, less flexible for the user
 hybrid: free text + controlled fields -> normalized gateway envelope
 ```
 
+Then explain the most painful prompt:
+
+```text
+幫我處理一下 VPN，那個帳號好像又壞了，順便開單給 IT。
+
+possible actions:
+- search_vpn_faq: read-only, likely allow
+- check_account_status: restricted, needs target account and permission
+- create_ticket_draft: draft, likely allow
+- submit_ticket: side effect, needs explicit confirmation or review
+```
+
+Board rule:
+
+```text
+Prompt = intention capture.
+UI hints = interpretation feedback.
+Classifier = semantic routing.
+Schema = contract.
+Policy = authority decision.
+Confirmation = side-effect control.
+Audit = accountability.
+```
+
+Then draw the safe-default matrix:
+
+| Risk | Confidence | Gateway behavior |
+|---|---:|---|
+| Low | High | execute |
+| Low | Low | ask one clarification |
+| High | High | preview and confirm |
+| High | Low | clarify, deny, or human review |
+
 Then contrast gateway types:
 
 ```text
@@ -360,6 +395,42 @@ Missing controls:
 
 Student critique prompt: "What can the LLM propose, and what must the gateway enforce?"
 
+### Failure 6B: Single-Label Classifier For A Multi-Intent Prompt
+
+```text
+User: "處理 VPN，帳號好像壞了，順便開單"
+Classifier output: vpn_issue
+Gateway action: only calls search_vpn_faq
+```
+
+Missing controls:
+
+- no action decomposition
+- no account-status ambiguity detection
+- no ticket draft proposal
+- no side-effect confirmation path
+- no missing-slot list
+- no confidence threshold or fallback
+
+Student critique prompt: "Which separate actions, slots, risks, and confirmation points are hidden inside this one sentence?"
+
+### Failure 6C: UI Hints Become A Long Mandatory Form
+
+```text
+Before describing the issue, user must fill category, device, error code,
+department, priority, reviewer, ticket type, and escalation route.
+```
+
+Missing controls:
+
+- no natural-language-first entry
+- no smart interpretation preview
+- no minimal clarification strategy
+- too much friction for low-risk requests
+- user cost optimized for schema cleanliness, not task completion
+
+Student critique prompt: "Which fields can be inferred or asked later, and which are truly required before a side effect?"
+
 ### Failure 7: Serverless Means No Backend
 
 ```text
@@ -427,6 +498,10 @@ Student critique prompt: "What does the serving engine do well, and what must re
 25. Which parts of an enterprise AI Gateway should run on containers/Kubernetes, and which parts can be serverless?
 26. What problem do vLLM and SGLang solve that a simple `model.generate()` script does not solve?
 27. Which metrics would tell you whether a model-serving endpoint is healthy?
+28. For a complex free-text prompt, why is multi-label classification safer than single-label classification?
+29. Which slots are missing in "那個帳號好像壞了"?
+30. Why can direct prompt input be good UX while direct prompt execution is unsafe?
+31. What is the difference between smart chips as optional interpretation feedback and a mandatory form?
 
 ## Teaching Notes
 
@@ -448,6 +523,14 @@ Student critique prompt: "What does the serving engine do well, and what must re
 - When students say "the LLM decides allow or deny," redirect them: the LLM may
   propose intent or draft tool arguments, but the policy engine decides
   `allow`, `deny`, or `review_required`, and the gateway/tool broker enforces.
+- When students say "the classifier labels it as VPN, so we are done," ask
+  whether the prompt also contains account status, ticket draft, submit ticket,
+  restricted data, or missing slots.
+- When students say "First principle means direct prompt only," separate entry
+  from execution: the user can enter natural language, while the gateway must
+  convert it into validated action proposals before tools run.
+- When students say "UI hints are annoying," distinguish mandatory forms from
+  optional smart chips, action previews, and one minimal clarification question.
 - When students cite OWASP as "the law," redirect them: OWASP is a practical
   security guideline; NIST/ISO/EU AI Act provide broader control, management,
   and regulatory vocabularies depending on context.

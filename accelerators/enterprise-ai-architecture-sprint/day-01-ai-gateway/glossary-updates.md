@@ -64,6 +64,20 @@ review.
 | Policy Engine | Rules or service that evaluates structured policy input and returns allow, deny, or review_required decisions. |
 | Intent Normalization | Process that converts raw text and client hints into structured intent, action, resource, and tool fields. |
 | Action Extraction | Process that maps free text and UI hints into canonical actions such as `retrieve_knowledge` or `create_ticket`. |
+| Action Proposal | Structured, non-executing candidate action produced by rules, classifier, retrieval, or LLM structured output before schema validation and policy decision. |
+| Action Decomposition | Splitting one user prompt into multiple candidate actions, such as read FAQ, check account status, create ticket draft, and submit ticket. |
+| Slot Filling | Extracting or asking for required fields such as account ID, error message, device type, recipient, or explicit confirmation. |
+| Missing Slot | Required action field that the gateway cannot safely infer from the prompt or trusted context. |
+| Multi-label Classification | Classification pattern where one prompt may receive multiple intent labels at the same time, such as `vpn_issue`, `account_issue`, and `ticket_creation`. |
+| Single-label Classification | Classification pattern where one input receives only one label; often too weak for complex enterprise gateway prompts. |
+| Confidence Threshold | Minimum confidence required before the gateway executes, drafts, asks clarification, denies, or routes to review. |
+| Ambiguity Detection | Identifying unclear phrases such as "那個帳號" or "處理一下" that require slot filling or clarification before execution. |
+| Action Registry | Versioned catalog of allowed actions/tools with name, description, risk level, required slots, side-effect status, and policy hooks. |
+| Smart Chips | Lightweight UI hints that show the gateway's interpretation, such as `[VPN 問題]` or `[送出前確認]`, without forcing a full form first. |
+| Action Preview | User-facing summary of proposed actions before confirmation, especially for side effects or restricted workflows. |
+| Natural-language-first UI | UX pattern where users can start with free text while the system internally converts it into structured action proposals. |
+| Policy-first execution | Engineering pattern where no tool or data access executes until structured proposals pass schema validation and policy decision. |
+| Safe Default | Gateway behavior that chooses the least risky useful interpretation: execute low-risk/high-confidence actions, clarify low-confidence actions, and confirm or review high-risk actions. |
 | LLM Structured Output | Model output constrained to a schema so extracted actions or slots can be validated by code. |
 | Workflow Planner | Rule, graph, or agent workflow that decomposes a request into ordered steps with state and review points. |
 | Risk Classification | Process that labels an action or task by risk, such as read-only, restricted retrieval, side-effect, external communication, or high-stakes output. |

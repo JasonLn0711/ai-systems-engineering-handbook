@@ -23,7 +23,7 @@ Total: 100 points.
 | Normalize free text/form input | request envelope and policy worksheet | Component responsibility, Request lifecycle |
 | Explain OWASP/NIST access-control basis | standards mapping worksheet | Beginner clarity, Risk-control map |
 | Explain serverless API boundary | serverless worksheet and lifecycle | Beginner clarity, Request lifecycle |
-| Compare action extraction methods | action extraction worksheet | Component responsibility, Request lifecycle |
+| Compare action extraction methods | action extraction worksheet with multi-intent decomposition, slots, confidence, and fallback | Component responsibility, Request lifecycle |
 | Separate gateway types | gateway type map | Component responsibility, Risk-control map |
 | Separate identity, role, and permission | policy worksheet, component table, audit fields | Beginner clarity, Component responsibility |
 | Decide allow/deny/review | policy worksheet, lifecycle, risk-control map | Request lifecycle, Risk-control map |
@@ -56,7 +56,7 @@ Total: 100 points.
 
 | Score | Standard |
 |---:|---|
-| 18-20 | 10-15 steps; includes HTTP route, JSON body, trace ID, token verification, server-side identity/role/permission lookup, schema validation, action extraction, risk classification, policy evaluation, RAG, tool broker enforcement, human review queue, audit, response status |
+| 18-20 | 10-15 steps; includes HTTP route, JSON body, trace ID, token verification, server-side identity/role/permission lookup, schema validation, action extraction, risk classification, policy evaluation, RAG, tool broker enforcement, human review queue, audit, response status; action extraction treats complex prompts as multiple action proposals rather than one label |
 | 14-17 | Mostly complete but missing one or two critical steps |
 | 8-13 | Basic flow exists, but governance or audit is incomplete |
 | 0-7 | Only describes a model call |
@@ -65,7 +65,7 @@ Total: 100 points.
 
 | Score | Standard |
 |---:|---|
-| 18-20 | At least seven concrete risks; includes free-text ambiguity, client-hint tampering, RAG ACL drift, side-effect tool risk, policy drift, cost/latency, or audit gaps; controls are system-enforced; evidence is inspectable |
+| 18-20 | At least seven concrete risks; includes free-text ambiguity, action extraction error, client-hint tampering, RAG ACL drift, side-effect tool risk, policy drift, cost/latency, UX friction, or audit gaps; controls are system-enforced; evidence is inspectable |
 | 14-17 | Risks are concrete, but evidence or controls are partly vague |
 | 8-13 | Risks are generic; controls are mostly slogans or prompt instructions |
 | 0-7 | Risks are not mapped to system controls |
@@ -74,7 +74,7 @@ Total: 100 points.
 
 | Score | Standard |
 |---:|---|
-| 9-10 | Sophomore-readable; defines why HTTP/serverless APIs are gateway boundaries; explains OWASP as guidance, NIST as control/risk vocabulary; separates free text, client hints, normalized request, user identity, role, permission, authentication, authorization, JSON object/schema, route/handler/log, RAG/API/database in concrete examples |
+| 9-10 | Sophomore-readable; defines why HTTP/serverless APIs are gateway boundaries; explains OWASP as guidance, NIST as control/risk vocabulary; separates free text, client hints, normalized request, user identity, role, permission, authentication, authorization, JSON object/schema, route/handler/log, RAG/API/database in concrete examples; explains natural-language-first UI and policy-first execution without forcing users into long forms |
 | 6-8 | Mostly readable, but some request-contract, HTTP/serverless boundary, standards mapping, or identity/role terms are unexplained |
 | 3-5 | Reads like an industry slide deck; hard for beginners |
 | 0-2 | Mostly abstract nouns |
@@ -100,8 +100,9 @@ Total: 100 points.
    into server-side authorization, deny-by-default, least privilege, ABAC-style
    attributes, or audit controls rather than cited as vague authority.
 4. **Action extraction check**: confirm that rules/classifier/LLM structured
-   output/workflow planner is named and that model output is validated before
-   policy or tool execution.
+   output/workflow planner is named; complex prompts are decomposed into
+   action candidates; slots, confidence, risk, ambiguity, and fallback are
+   present; model output is validated before policy or tool execution.
 5. **Artifact completeness check**: confirm that all four artifacts are present.
 6. **Architecture pass**: inspect required components and flow direction.
 7. **Lifecycle pass**: verify ordering from identity to schema validation to
@@ -124,5 +125,6 @@ normalize free text/client hints into structured actions; show that RAG filters
 permissions before model context; describe tool calling as a controlled API
 action; explain why serverless API still needs trusted authorization logic;
 map at least one OWASP and one NIST idea to the gateway design; name an action
-extraction method; and explain why review is a normal control point rather than
-a failure.
+extraction method; explain why classifier output should include multi-label
+intents, action candidates, slots, risk, confidence, and fallback; and explain
+why review is a normal control point rather than a failure.

@@ -201,14 +201,57 @@ The gateway may use an LLM to help interpret free text, but the LLM should only
 propose structured actions. The gateway still validates schema, maps actions to
 registered tools/resources, evaluates policy, and enforces decisions.
 
+The hardest practical issue is that users do not speak in schemas. A user may
+write:
+
+```text
+幫我處理一下 VPN，那個帳號好像又壞了，順便開單給 IT。
+```
+
+That single sentence may contain a read-only FAQ lookup, an account-status
+question, a restricted identity-access request, a ticket draft request, and a
+possible side-effect ticket submission. A gateway classifier therefore should
+not be treated as a single-label component that returns only `vpn_issue`.
+Production-grade extraction is closer to:
+
+```text
+multi-label classification
++ action decomposition
++ slot extraction
++ risk classification
++ ambiguity detection
++ recommended next step
+```
+
+The user interface can stay natural-language-first, but the internal gateway
+must be policy-first:
+
+```text
+free text prompt
+-> action candidates
+-> slot filling
+-> risk scoring
+-> schema validation
+-> policy decision
+-> execute, draft, confirm, clarify, deny, or review
+```
+
+The gateway should not do:
+
+```text
+user prompt -> LLM judgment -> direct tool execution
+```
+
 Common action extraction methods:
 
 | Method | Best fit | Control needed |
 |---|---|---|
-| UI controlled fields | Stable workflows with clear choices | Treat fields as hints unless produced by trusted server-side code |
-| Rules | Small domains with explicit phrases | Keep tests for phrase coverage and false positives |
-| Classifier | High-volume repeated task categories | Track confidence and fallback paths |
-| LLM structured output | Natural-language intent and slot extraction | Validate JSON schema; retry, clarify, review, or deny on invalid output |
+| UI controlled fields | Stable workflows with clear choices | Keep them optional where possible; treat client fields as hints unless produced by trusted server-side code |
+| Rules | High-precision phrases such as delete, send, reset, export, staff-only, salary, diagnosis | Use rules as risk signals, not as the only understanding engine |
+| Traditional classifier | High-volume repeated task categories with labeled examples | Prefer multi-label probabilities; track confidence and fallback paths |
+| Transformer classifier | Semantic variants and enterprise intent categories | Use sigmoid multi-label outputs for mixed intent; measure false positives and false negatives |
+| LLM structured output | Complex natural-language intent, slot extraction, and action proposal | Validate JSON schema; retry, clarify, review, or deny on invalid output |
+| Embedding retrieval over action registry | Constraining possible tools before planner output | Retrieve known tools only; do not let the model invent authority |
 | Workflow planner / graph | Multi-step agent workflows | Pause before sensitive tools and preserve state for human review |
 
 The engineering rule is:
@@ -219,6 +262,69 @@ Schema validates.
 Policy engine decides.
 Tool broker enforces.
 Audit log records.
+```
+
+For beginner implementations, the classifier output should include at least:
+
+```text
+intent labels
+action candidates
+risk labels
+required and missing slots
+ambiguity signals
+recommended next step
+```
+
+For the VPN example above, a strong gateway may produce:
+
+```json
+{
+  "actions": [
+    {
+      "action_type": "search_vpn_faq",
+      "risk_level": "read_only",
+      "confidence": 0.91,
+      "missing_slots": []
+    },
+    {
+      "action_type": "check_account_status",
+      "risk_level": "restricted",
+      "confidence": 0.62,
+      "missing_slots": ["account_id"]
+    },
+    {
+      "action_type": "create_ticket_draft",
+      "risk_level": "draft",
+      "confidence": 0.84,
+      "missing_slots": ["affected_user", "error_message", "device_type"]
+    },
+    {
+      "action_type": "submit_ticket",
+      "risk_level": "side_effect",
+      "confidence": 0.55,
+      "missing_slots": ["explicit_submit_confirmation"]
+    }
+  ],
+  "recommended_next_step": "answer_vpn_faq_create_draft_and_ask_minimal_clarification"
+}
+```
+
+The UI should translate this into a compact action preview, not a long form:
+
+```text
+我可以先查 VPN troubleshooting，並建立 IT ticket 草稿。
+要查帳號狀態或送出 ticket 前，我會先請你確認。
+```
+
+This is the UX principle:
+
+```text
+Natural-language-first interface.
+Policy-first execution.
+Low risk + high confidence -> execute.
+Low risk + low confidence -> ask one clarifying question.
+High risk + high confidence -> preview and confirm.
+High risk + low confidence -> clarify, deny, or escalate.
 ```
 
 ## Gateway Types
@@ -240,6 +346,8 @@ AI Gateway is the AI request control plane that composes these boundaries.
 | Pain point | Why it is hard | Practical control |
 |---|---|---|
 | Free-text ambiguity | One message can mix read-only lookup, restricted retrieval, and side-effect requests | Hybrid UI hints, rules/classifier/LLM structured output, schema validation, confidence fallback |
+| Ambiguous action extraction | A prompt such as "處理 VPN，帳號好像壞了，順便開單" can imply FAQ search, restricted account lookup, ticket draft, and ticket submission at once | Multi-label classification, action decomposition, slot extraction, risk scoring, minimal clarification, and per-action policy decisions |
+| UX friction from structured inputs | Full forms reduce ambiguity but can make users feel blocked before they explain the problem | Natural-language-first input, optional smart chips, action preview, ask only missing required slots, confirm only side effects |
 | RAG ACL drift | Source permissions change after documents are indexed | Metadata sync, retrieval-time permission checks, source IDs and document versions in audit |
 | Side-effect tool risk | Agents can create tickets, send email, update records, or trigger external workflows | Tool registry, dry-run preview, idempotency key, approval gate, tool audit |
 | Policy drift / privilege creep | Roles, groups, vendors, temporary staff, and service accounts change over time | Policy-as-code, versioning, authorization regression tests, periodic access reviews |

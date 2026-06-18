@@ -179,7 +179,12 @@ IdentityContext:
 
 ActionExtractionResult:
   method: rules | classifier | llm_structured_output | workflow_planner
+  intent_labels
+  action_candidates
+  risk_labels
   confidence
+  ambiguity_signals
+  recommended_next_step
   normalized_actions
   validation_errors
 
@@ -188,7 +193,11 @@ NormalizedAction:
   tool_name
   resource
   side_effect
+  risk_level
+  confidence
   required_slots
+  missing_slots
+  execution_mode: execute | draft | confirm | clarify | deny | review_required
 
 PolicyDecision:
   decision: allow | deny | review_required

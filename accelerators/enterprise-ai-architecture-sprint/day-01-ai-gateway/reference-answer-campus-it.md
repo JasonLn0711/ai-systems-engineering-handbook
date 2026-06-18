@@ -50,6 +50,19 @@ Expected interpretation:
 | NIST mapping | subject=`student_001`, object=`public_it_faq` or `ticket_system`, operation=`retrieve` or `create`, environment=`student_portal` |
 | Action extraction | hybrid UI hints plus structured-output planner propose actions; schema and policy validate them |
 
+Complex prompt interpretation:
+
+```text
+Prompt:
+幫我處理一下 VPN，那個帳號好像又壞了，順便開單給 IT。
+
+Reference reading:
+- "VPN" maps to a read-only troubleshooting lookup.
+- "那個帳號" is ambiguous and cannot be used as a target account without slot filling.
+- "帳號壞了" may imply restricted identity/access data, so the gateway must check permission before account-status lookup.
+- "開單" should first become a ticket draft or review-required side-effect path, not direct submission.
+```
+
 Normalized gateway action:
 
 ```json
@@ -123,6 +136,22 @@ Action extraction evidence:
 | raw message asks to create ticket | `create_ticket` with `create_it_ticket` |
 | UI hint says `urgency=medium` | accepted as a hint, not as final risk truth |
 | tool registry marks `create_it_ticket.side_effect=true` | policy routes it to `review_required` for student |
+
+Complex extraction evidence:
+
+| Action candidate | Risk | Confidence | Missing slots | Reference decision |
+|---|---|---:|---|---|
+| `search_vpn_faq` | read-only | 0.91 | none | allow |
+| `check_account_status` | restricted | 0.62 | `account_id`, ownership or permission | ask clarification, then policy check |
+| `create_ticket_draft` | draft | 0.84 | `affected_user`, `error_message`, `device_type` | allow draft |
+| `submit_ticket` | side-effect | 0.55 | explicit confirmation | review_required or require confirmation |
+
+Reference UX response:
+
+```text
+我可以先查 VPN troubleshooting，並建立 IT ticket 草稿。
+要查帳號狀態或送出 ticket 前，我會先請你確認。
+```
 
 Serverless implementation variant:
 

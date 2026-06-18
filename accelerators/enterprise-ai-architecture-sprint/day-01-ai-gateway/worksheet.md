@@ -194,12 +194,61 @@ Side-effect actions:
 Actions requiring review_required:
 ```
 
+If the prompt contains multiple ideas, decompose it before policy:
+
+```text
+Complex prompt example:
+Possible intent labels:
+Action candidate 1:
+Action candidate 2:
+Action candidate 3:
+Restricted data request, if any:
+Side-effect request, if any:
+Ambiguous words or phrases:
+Missing slots:
+Recommended next step:
+```
+
+Classifier output should not be only one label. Fill these fields:
+
+```text
+Multi-label intent scores:
+Action candidates:
+Risk labels: read_only / draft / side_effect / restricted / privileged
+Required slots:
+Missing slots:
+Confidence threshold:
+What happens below threshold:
+```
+
 Fill one normalized action plan:
 
-| Action | Resource | Tool | Read-only or side-effect | Extraction evidence | Decision |
-|---|---|---|---|---|---|
-|  |  |  |  |  |  |
-|  |  |  |  |  |  |
+| Action | Resource | Tool | Risk | Confidence | Missing slots | Extraction evidence | Decision |
+|---|---|---|---|---:|---|---|---|
+|  |  |  | read-only / draft / side-effect / restricted |  |  |  |  |
+|  |  |  | read-only / draft / side-effect / restricted |  |  |  |  |
+|  |  |  | read-only / draft / side-effect / restricted |  |  |  |  |
+
+Design the UX response:
+
+```text
+Natural-language input remains available: yes / no
+Optional UI hints or smart chips:
+Action preview shown to user:
+One minimal clarification question:
+Which action can execute immediately:
+Which action becomes draft:
+Which action needs confirmation:
+Which action is denied or escalated:
+Why this is lower total user cost than a long form:
+```
+
+Safe-default decision table:
+
+| Action | Risk | Confidence | Gateway behavior |
+|---|---|---:|---|
+|  | low / high |  | execute / clarify / preview-confirm / deny-escalate |
+|  | low / high |  | execute / clarify / preview-confirm / deny-escalate |
 
 ## 7. Serverless API Boundary Worksheet
 
