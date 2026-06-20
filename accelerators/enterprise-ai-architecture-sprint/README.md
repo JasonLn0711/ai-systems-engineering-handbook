@@ -57,15 +57,25 @@ potential
    entrypoint.
 5. Use `day-02-agent-governance/README.md` for the second teaching and
    artifact-production day.
-6. Use `../accelerator-day-design-standard.md` and
+6. Use `day-03-red-team-guardrails/README.md` for the third teaching and
+   artifact-production day.
+7. Use `day-04-rag-tool-gateway/README.md` for the fourth teaching and
+   artifact-production day.
+8. Use `day-05-k8s-gpu-serving/README.md` for the fifth teaching and
+   artifact-production day.
+9. Use `day-06-integrated-demo-memo/README.md` for the sixth teaching and
+   artifact-production day.
+10. Use `day-07-onboarding-pack/README.md` for the seventh teaching and
+   artifact-production day.
+11. Use `../accelerator-day-design-standard.md` and
    `../../templates/accelerator-day-package/` for Day 2 and later course
    packages.
-7. Build the artifacts in priority order.
-8. Link each sprint output back to the owning module or lab.
-9. Treat every numbered sprint file as an evidence-production plan and each
+12. Build the artifacts in priority order.
+13. Link each sprint output back to the owning module or lab.
+14. Treat every numbered sprint file as an evidence-production plan and each
    `day-*` directory as a teachable course package with student, instructor,
    worksheet, reference-answer, rubric, and lab-handoff files.
-10. Convert any private source-derived insight into public-safe system
+15. Convert any private source-derived insight into public-safe system
     language.
 
 ## Day Course Packages
@@ -74,11 +84,28 @@ potential
 |---|---|---|---|
 | 1 | AI Gateway Architecture Evidence | `day-01-ai-gateway/` | `01-ai-gateway-architecture.md` |
 | 2 | Agent Governance Framework | `day-02-agent-governance/` | `02-agent-governance-framework.md` |
+| 3 | Red-Team Guardrails | `day-03-red-team-guardrails/` | `03-red-teaming-framework.md`, `06-pii-guardrail-demo-plan.md` |
+| 4 | RAG + Tool Registry + Gateway Integration | `day-04-rag-tool-gateway/` | `07-mcp-tool-memory-governance.md`, `02-agent-governance-framework.md` |
+| 5 | Docker / K8s / GPU Sizing / vLLM | `day-05-k8s-gpu-serving/` | `04-k8s-inference-service-lab.md`, `05-gpu-capacity-estimation-model.md` |
+| 6 | Integrated Demo + Architecture Memo | `day-06-integrated-demo-memo/` | `08-voice-agent-evidence-plan.md`, `01-ai-gateway-architecture.md` |
+| 7 | Onboarding Pack + First 30 Days Plan | `day-07-onboarding-pack/` | `master-knowledge-base/08-first-30-days-learning-checklist.md`, `30-day-spiral-bootcamp.zh-TW.md` |
 
 The full 7-day tutorial covers voice AI, RAG, tool governance, red teaming,
 PII guardrails, Docker/K8s, GPU sizing, demo packaging, and first-30 days
 onboarding strategy. The 30-day bootcamp revisits the same themes in four
 spiral passes: overview, mechanism, lab, and delivery.
+
+## 7-Day Package Completion Status
+
+| Day | Topic | Package path | Student handout | Worksheet | Rubric | Handoff | Status |
+|---|---|---|---|---|---|---|---|
+| 1 | AI Gateway Architecture Evidence | `day-01-ai-gateway/` | detailed + zh-TW + summary | yes | yes | `day-02-lab-handoff.md` | ready |
+| 2 | Agent Governance Framework | `day-02-agent-governance/` | detailed + zh-TW + summary | yes | yes | `day-03-red-team-handoff.md` | ready |
+| 3 | Red-Team Guardrails | `day-03-red-team-guardrails/` | detailed + zh-TW + summary | yes | yes | `day-04-rag-tool-gateway-handoff.md` | ready |
+| 4 | RAG + Tool Registry + Gateway Integration | `day-04-rag-tool-gateway/` | detailed + zh-TW + summary | yes | yes | `day-05-k8s-gpu-handoff.md` | ready |
+| 5 | Docker / K8s / GPU Sizing / vLLM | `day-05-k8s-gpu-serving/` | detailed + zh-TW + summary | yes | yes | `day-06-demo-memo-handoff.md` | ready |
+| 6 | Integrated Demo + Architecture Memo | `day-06-integrated-demo-memo/` | detailed + zh-TW + summary | yes | yes | `day-07-onboarding-handoff.md` | ready |
+| 7 | Onboarding Pack + First 30 Days Plan | `day-07-onboarding-pack/` | detailed + zh-TW + summary | yes | yes | `day-08-lab-handoff.md` | ready |
 
 ## Priority Order
 

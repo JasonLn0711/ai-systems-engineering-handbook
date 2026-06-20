@@ -393,6 +393,33 @@ Day 3 red-team handoff。它延續 Day 1 的 AI Gateway architecture evidence，
 把 Gateway 需要管理的 agent governance contract 轉成大二學生可完成、TA 可評分
 的教程組件。
 
+Day 3 正式課程包已放在：
+
+```text
+accelerators/enterprise-ai-architecture-sprint/day-03-red-team-guardrails/
+```
+
+這份 Day 3 package 把 Day 2 的 governance assumptions 轉成 red-team taxonomy、
+PII / guardrail policy event schema、30-case mini harness spec、pass/fail report
+template 與 remediation backlog。它讓學生用 public-safe scenario 產出可測試、
+可審查、可銜接下一個實作或部署 gate 的安全 evidence。
+
+Day 4 到 Day 7 的正式課程包已補齊：
+
+```text
+accelerators/enterprise-ai-architecture-sprint/day-04-rag-tool-gateway/
+accelerators/enterprise-ai-architecture-sprint/day-05-k8s-gpu-serving/
+accelerators/enterprise-ai-architecture-sprint/day-06-integrated-demo-memo/
+accelerators/enterprise-ai-architecture-sprint/day-07-onboarding-pack/
+```
+
+這四天把 7 日版收斂成完整交付線：Day 4 連接 RAG schema、tool registry 與
+Gateway integration；Day 5 產出 K8s/GPU/vLLM deployability evidence；Day 6
+把 demo script、architecture memo、latency table 與 acceptance checklist 整合成可展示包；
+Day 7 則產出 onboarding pack、first-week questions、first-30-days plan、
+mock review checklist 與 next validation path。7 日版是主交付；30 日 bootcamp 是後續
+spiral deepening path。
+
 ## 12. 給老師的可直接使用指令
 
 老師可以用以下 prompt 請 AI agent 或 TA 協助產生某個章節草稿：
