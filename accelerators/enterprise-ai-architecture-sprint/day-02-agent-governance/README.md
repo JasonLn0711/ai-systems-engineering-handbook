@@ -147,6 +147,8 @@ Gateway 收到 request 後，要怎麼知道：
 ```text
 day-02-agent-governance/
 ├── README.md
+├── student-handout-detailed.md
+├── student-handout-detailed.zh-TW.md
 ├── student-handout.md
 ├── instructor-guide.md
 ├── worksheet.md
@@ -154,13 +156,16 @@ day-02-agent-governance/
 ├── rubric.md
 ├── day-03-red-team-handoff.md
 ├── glossary-updates.md
-└── source-package.md
+├── source-package.md
+└── youtube-learning-map.md
 ```
 
 | 檔案 | 對象 | 用途 |
 |---|---|---|
 | `README.md` | 所有人 | Day 2 總覽、學習目標、檔案導覽 |
-| `student-handout.md` | 學生 | 主要教程，不含完整參考答案與詳細 rubric |
+| `student-handout-detailed.md` | 學生 / 老師 | canonical long-form student explanation；新學生材料先加到這裡 |
+| `student-handout-detailed.zh-TW.md` | 學生 / 老師 | 台灣繁體中文完整詳細版，保留 detailed 版全部章節與細節 |
+| `student-handout.md` | 學生 | 由 detailed 版摘要而成的正常課堂講義，不含完整參考答案與詳細 rubric |
 | `instructor-guide.md` | 老師 / TA | 授課流程、提問、常見錯誤診斷、peer review |
 | `worksheet.md` | 學生 | 課堂與作業產出模板 |
 | `reference-answer-campus-it-agent.md` | 老師 / TA | Campus IT Helpdesk Agent 完整參考答案 |
@@ -168,6 +173,7 @@ day-02-agent-governance/
 | `day-03-red-team-handoff.md` | 學生 / 老師 / TA | 將 Day 2 artifact 轉成 Day 3 red-team test cases |
 | `glossary-updates.md` | repo 維護者 | 後續整併到 global glossary |
 | `source-package.md` | 老師 / repo 維護者 | source boundary、官方參考與課程設計邊界 |
+| `youtube-learning-map.md` | AI agent / 學生 / 老師 | Day 2 所有細節與知識概念的 YouTube 學習順序與前十名影片 |
 
 ---
 
@@ -176,21 +182,28 @@ day-02-agent-governance/
 ### 學生使用順序
 
 1. 先讀 `student-handout.md`。
-2. 填寫 `worksheet.md` 的第 1 到第 4 區。
-3. 小組 peer review：檢查 gateway alignment、agent registration、common-vs-adapter。
-4. 填寫 `worksheet.md` 的第 5 到第 10 區。
-5. 依照 `day-03-red-team-handoff.md`，把 Day 2 policy assumptions 轉成 Day 3 seeds。
-6. 交作業前使用 `worksheet.md` final checklist。
+2. 需要完整例子時查 `student-handout-detailed.md` 或 `student-handout-detailed.zh-TW.md`。
+3. 填寫 `worksheet.md` 的第 1 到第 4 區。
+4. 小組 peer review：檢查 gateway alignment、agent registration、common-vs-adapter。
+5. 填寫 `worksheet.md` 的第 5 到第 10 區。
+6. 依照 `day-03-red-team-handoff.md`，把 Day 2 policy assumptions 轉成 Day 3 seeds。
+7. 交作業前使用 `worksheet.md` final checklist。
 
 ### 老師 / TA 使用順序
 
 1. 先讀本 `README.md`。
 2. 閱讀 `instructor-guide.md`，選擇 150 分鐘或 180 分鐘流程。
-3. 課前閱讀 `student-handout.md`，確認學生版不含完整參考答案。
+3. 課前閱讀 `student-handout-detailed.md`、`student-handout-detailed.zh-TW.md` 與 `student-handout.md`，確認學生版不含完整參考答案。
 4. 課堂中使用 `worksheet.md`。
 5. 課後用 `rubric.md` 評分。
 6. 如需校準評分，可參考 `reference-answer-campus-it-agent.md`。
 7. Day 3 開課前使用 `day-03-red-team-handoff.md`。
+
+### Student Handout Maintenance
+
+新增 Day 2 學生材料時，先更新 `student-handout-detailed.md`，再同步
+`student-handout-detailed.zh-TW.md`，最後把 `student-handout.md` 維持為保留章節
+結構的 first-principle summary。
 
 ---
 

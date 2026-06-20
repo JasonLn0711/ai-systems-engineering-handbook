@@ -15,15 +15,17 @@ limited time box.
   real-time voice. Its Traditional Chinese 7-day onboarding tutorial is
   `enterprise-ai-architecture-sprint/7-day-consulting-onboarding-tutorial.zh-TW.md`;
   the expanded 28/30-day spiral bootcamp is
-  `enterprise-ai-architecture-sprint/30-day-spiral-bootcamp.zh-TW.md`.
+  `enterprise-ai-architecture-sprint/30-day-spiral-bootcamp.zh-TW.md`. The
+  primary completion track is the 7-day version; the 30-day version is the
+  expanded spiral bootcamp.
 
 ## Day Package Standard
 
 Use `accelerator-day-design-standard.md` and
 `templates/accelerator-day-package/` when creating Day 2, Day 3, and later
-accelerator course packages. Each day should separate student handout,
-instructor guide, worksheet, reference answer, rubric, lab handoff, and
-glossary updates.
+accelerator course packages. Each day should separate detailed student handout,
+Taiwan Traditional Chinese detailed handout, normal student handout, instructor
+guide, worksheet, reference answer, rubric, lab handoff, and glossary updates.
 
 ## Boundary
 
