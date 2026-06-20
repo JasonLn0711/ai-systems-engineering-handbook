@@ -104,6 +104,20 @@ By the end of Day 1, the student should be able to:
 | `glossary-updates.md` | Maintainers | Terms to merge into global glossary files later. |
 | `source-package.md` | Maintainers | Original full package preserved as source material. |
 
+## Agent-Readable Companion Notes
+
+These files are optional companion references for AI agents, instructors, and
+students who need deeper source-derived study paths before or after the normal
+Day 1 package.
+
+| File | Purpose |
+|---|---|
+| `youtube-learning-map.md` | Ordered YouTube learning map for the Day 1 details and concepts. |
+| `c4-model-video-notes.md` | Notes for Simon Brown's C4 model talk, mapped to enterprise AI architecture evidence. |
+| `hypothesis-based-problem-solving-video-notes.md` | Notes for hypothesis-driven consulting problem solving, mapped to enterprise AI delivery decisions. |
+| `web-request-response-lifecycle-video-notes.md` | Notes for full web request-response lifecycle, mapped to AI Gateway and production debugging. |
+| `rbac-vs-abac-video-notes.md` | Notes for RBAC, ABAC, PEP/PDP, and AI Gateway authorization boundaries. |
+
 ## Recommended Use Order
 
 For a class session:
