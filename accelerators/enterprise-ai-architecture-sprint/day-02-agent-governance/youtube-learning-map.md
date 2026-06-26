@@ -20,6 +20,7 @@ agent_use:
   - Use top_10_priority_videos for the first viewing assignment
   - Use learning_sequence for complete Day 2 coverage
   - Use coverage_index to verify that every Day 2 concept has video support
+  - Use agent-governance-framework-video-notes.md as the companion note for the first priority video
 ```
 
 ## Reading Contract For Agents
@@ -60,7 +61,7 @@ confused deputy, replay, and Day 3 red-team details.
 
 | Rank | Video | Why Watch First | Day 2 Output |
 |---:|---|---|---|
-| 1 | [Building an AI Agent Governance Framework: 5 Essential Pillars](https://www.youtube.com/watch?v=5hK7pQsvpy0) | Frames agent governance as runtime control, not policy prose or prompt wording. | One-paragraph Day 2 thesis. |
+| 1 | [Building an AI Agent Governance Framework: 5 Essential Pillars](https://www.youtube.com/watch?v=5hK7pQsvpy0) ([notes](agent-governance-framework-video-notes.md)) | Frames agent governance as runtime control, not policy prose or prompt wording. | One-paragraph Day 2 thesis. |
 | 2 | [What is an AI Gateway?](https://www.youtube.com/watch?v=88q_RAHJFlo) | Establishes the AI Gateway as the entry/control boundary for model and agent traffic. | Gateway alignment note baseline. |
 | 3 | [Authorization EXPLAINED! RBAC vs ABAC vs ACL](https://www.youtube.com/watch?v=7CG5VQafaTI) | Separates identity, role, permission, and attribute-based decisions. | Trusted identity and allowed-user fields. |
 | 4 | [Data Plane vs. Control Plane](https://www.youtube.com/watch?v=Ep1QW-wOmgc) | Explains why policy/audit/review belong in the control plane, not model output. | Control-plane vs data-plane section. |
@@ -75,7 +76,7 @@ confused deputy, replay, and Day 3 red-team details.
 
 | Seq | Concept IDs | Concepts | Recommended Videos | Required Output | Coverage Notes |
 |---:|---|---|---|---|---|
-| 1 | `governance.thesis`, `prompt_not_boundary`, `system_contract` | Enterprise agent 不是靠 prompt 治理；真正的邊界是 registry、policy、tool/data/memory/message boundary、declassification、audit、review、evaluation feedback。 | [Building an AI Agent Governance Framework](https://www.youtube.com/watch?v=5hK7pQsvpy0); [OWASP Top 10 for LLMs](https://www.youtube.com/watch?v=de9UPN7yD5U) | Day 2 thesis sentence. | 對應 handout 第 0-1 章。 |
+| 1 | `governance.thesis`, `prompt_not_boundary`, `system_contract` | Enterprise agent 不是靠 prompt 治理；真正的邊界是 registry、policy、tool/data/memory/message boundary、declassification、audit、review、evaluation feedback。 | [Building an AI Agent Governance Framework](https://www.youtube.com/watch?v=5hK7pQsvpy0) ([notes](agent-governance-framework-video-notes.md)); [OWASP Top 10 for LLMs](https://www.youtube.com/watch?v=de9UPN7yD5U) | Day 2 thesis sentence. | 對應 handout 第 0-1 章。 |
 | 2 | `campus_it`, `staff_only`, `ticket_spam`, `pii_memory` | Campus IT Helpdesk 情境：public FAQ/VPN/status 可查；staff-only SOP 不可查；ticket submit 要 review；PII 不進 shared memory。 | [Guide to Architect Secure AI Agents](https://www.youtube.com/watch?v=UMYtqHptYvA); [Presidio in Action](https://www.youtube.com/watch?v=_dAzcCk-3U4) | Scenario boundary note. | 先建立公共安全案例，再進 artifacts。 |
 | 3 | `ai_gateway`, `post_gateway_requests`, `gateway_contract` | Day 1 的 `POST /gateway/requests` 接到 Day 2 的 schema validation、identity、action extraction、registry、policy、tool/data/memory/message check、review、audit、HTTP outcome。 | [What is an AI Gateway?](https://www.youtube.com/watch?v=88q_RAHJFlo); [Workshop 101: Enterprise-Grade AI Platform with Kong AI Gateway](https://www.youtube.com/watch?v=P8hNtNW3I4s) | Gateway alignment outline. | Day 2 必須接回 Day 1 route，而不是獨立治理表格。 |
 | 4 | `request_schema`, `json_schema`, `pydantic`, `http_outcomes` | Request fields：`session_token`、`channel`、`raw_message`、`client_hints`、`requested_agent`；outcomes：`200`、`202`、`400`、`401`、`403`。 | [API Request Validation with JSON Schema](https://www.youtube.com/watch?v=PvGidZovN4c); [FastAPI in 15 Minutes](https://www.youtube.com/watch?v=BPRKBQwEHe0); [Learn HTTP Status Codes In 10 Minutes](https://www.youtube.com/watch?v=wJa5CTIFj7U) | Request/response contract table. | Schema failure and auth failure must be visible system outcomes. |

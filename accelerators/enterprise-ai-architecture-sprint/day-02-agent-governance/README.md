@@ -157,6 +157,7 @@ day-02-agent-governance/
 ├── day-03-red-team-handoff.md
 ├── glossary-updates.md
 ├── source-package.md
+├── agent-governance-framework-video-notes.md
 └── youtube-learning-map.md
 ```
 
@@ -173,6 +174,7 @@ day-02-agent-governance/
 | `day-03-red-team-handoff.md` | 學生 / 老師 / TA | 將 Day 2 artifact 轉成 Day 3 red-team test cases |
 | `glossary-updates.md` | repo 維護者 | 後續整併到 global glossary |
 | `source-package.md` | 老師 / repo 維護者 | source boundary、官方參考與課程設計邊界 |
+| `agent-governance-framework-video-notes.md` | AI agent / 學生 / 老師 | `Building an AI Agent Governance Framework: 5 Essential Pillars` 的補習班式筆記，將五大 pillar 對應到 runtime controls |
 | `youtube-learning-map.md` | AI agent / 學生 / 老師 | Day 2 所有細節與知識概念的 YouTube 學習順序與前十名影片 |
 
 ---
