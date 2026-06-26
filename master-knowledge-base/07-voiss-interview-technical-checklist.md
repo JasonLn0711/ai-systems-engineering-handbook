@@ -193,6 +193,11 @@ enterprise requirement
 
 ## 6. Voice AI And Audio Systems
 
+- [ ] **Audio signal processing for ML**: Study the public-safe note
+  `modules/08-voice-ai-systems/audio-signal-processing-for-machine-learning-video-notes.md`
+  before answering waveform / decibel / VAD / acoustic-feature questions. It
+  connects waveform, sample rate, PCM, RMS, ZCR, FFT, STFT, spectrogram, Mel,
+  MFCC, ASR, diarization, service API, deployment, and evaluation.
 - [ ] **ASR**: Speech-to-text, including model selection, sampling rate,
   language/domain adaptation, timestamps, and error analysis.
 - [ ] **Breeze-ASR / Whisper**: Public model families worth studying for

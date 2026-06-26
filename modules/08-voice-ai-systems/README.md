@@ -27,6 +27,14 @@ Teach complete voice AI systems, not only ASR.
 - Environmental Sound Detection.
 - Voice AI Evaluation.
 
+## Companion Learning Notes
+
+- `audio-signal-processing-for-machine-learning-video-notes.md`: agent-readable
+  record of Jason's study of `Audio Signal Processing for Machine Learning`.
+  Use it as the audio-intake bridge from waveform / sample rate / RMS / STFT /
+  Mel / MFCC into VAD, ASR, diarization, service APIs, deployment, and
+  evaluation.
+
 ## First Labs
 
 - Build a VAD segmentation demo.

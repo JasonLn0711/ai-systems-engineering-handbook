@@ -2,6 +2,15 @@
 
 - audio signal
 - sampling rate
+- PCM
+- waveform
+- RMS energy
+- zero-crossing rate
+- FFT
+- STFT
+- spectrogram
+- Mel spectrogram
+- MFCC
 - VAD
 - ASR
 - diarization

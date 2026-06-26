@@ -15,3 +15,11 @@ Teach complete voice AI systems, including audio, VAD, ASR, diarization, TTS, wa
 - `01-audio-signal-basics.md`
 - `03-vad-and-speech-segmentation.md`
 - `11-real-time-voice-agent-latency-budget.md`
+
+## Companion Source Notes
+
+- `audio-signal-processing-for-machine-learning-video-notes.md`: public-safe
+  video-study note covering waveform, sample rate, PCM, RMS, ZCR, FFT, STFT,
+  spectrogram, Mel spectrogram, MFCC, VAD, ASR, diarization, API delivery, and
+  evaluation. Treat it as the prerequisite bridge before deeper ASR or voice
+  agent labs.
