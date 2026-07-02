@@ -43,6 +43,9 @@ potential
 - Consolidated 7-day onboarding pack for enterprise voice AI systems.
 - Expanded 28-day bootcamp plus 2-day mock review and portfolio packaging
   plan.
+- VOISS-style Agent Platform onboarding bridge focused on API / SDK / embed /
+  CLI platformization, AI Gateway governance, and runtime deployment depth:
+  `voiss-agent-platform-onboarding-sprint-2026-07-02.md`.
 
 ## How To Use It
 
@@ -77,11 +80,15 @@ potential
    worksheet, reference-answer, rubric, and lab-handoff files.
 15. Convert any private source-derived insight into public-safe system
     language.
+16. Use `voiss-agent-platform-onboarding-sprint-2026-07-02.md` when the learner
+    needs a sharper company-adjacent onboarding sprint that prioritizes
+    customer integration contracts before gateway and runtime depth.
 
 ## Day Course Packages
 
 | Day | Topic | Course package | Evidence plan |
 |---|---|---|---|
+| Bridge | VOISS-style Agent Platform onboarding | public-safe bridge note | `voiss-agent-platform-onboarding-sprint-2026-07-02.md` |
 | 1 | AI Gateway Architecture Evidence | `day-01-ai-gateway/` | `01-ai-gateway-architecture.md` |
 | 2 | Agent Governance Framework | `day-02-agent-governance/` | `02-agent-governance-framework.md` |
 | 3 | Red-Team Guardrails | `day-03-red-team-guardrails/` | `03-red-teaming-framework.md`, `06-pii-guardrail-demo-plan.md` |

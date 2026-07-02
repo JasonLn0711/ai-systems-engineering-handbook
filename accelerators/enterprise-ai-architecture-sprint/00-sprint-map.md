@@ -36,6 +36,26 @@ enterprise requirement
 -> customer acceptance criteria
 ```
 
+## VOISS-Style Platformization Bridge
+
+When the learner is preparing specifically for an AI Coach / Agent platform
+role, use:
+
+```text
+voiss-agent-platform-onboarding-sprint-2026-07-02.md
+```
+
+That bridge narrows the sprint from broad enterprise voice AI readiness into
+three ordered capability lanes:
+
+1. `P0`: Agent API / SDK / embed / CLI platformization.
+2. `P1`: AI Gateway / Guardrail / RBAC / audit / on-prem architecture.
+3. `P2`: AWQ / LoRA / finetune / pruning / Docker / K8s / GPU sizing runtime.
+
+The bridge keeps ASR, RAG, tool use, PII, red-team, KV cache, and TTS latency
+inside those three lanes so the sprint does not fragment into unrelated tool
+study.
+
 ## 7-Day Consulting Sprint Flow
 
 | Day | Focus | Main evidence |
